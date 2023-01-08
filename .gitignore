@@ -1,0 +1,13 @@
+.DS_Store
+Lib/
+Lib_android/
+Lib_android_*/
+Eyer3rdpart/
+Eyer3rdpartOpenCV/
+Eyer3rdpartSkia/
+Eyer3rdpartBGFX/
+.vscode/
+EyerLib/
+*.class
+.idea/
+build*/
