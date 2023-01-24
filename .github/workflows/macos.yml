@@ -7,14 +7,7 @@ on:
 jobs:
   build:
     name: Build
-    strategy:
-      matrix:
-        os: [macos-12.2]
-        qt_ver: [6.2.2]
-        qt_arch: [clang_64]
-    runs-on: ${{ matrix.os }}
-    env:
-      targetName: YouTranser-MacOSBuild
+    runs-on: macos-latest
     steps:
       - name: Build 3rdpart
         run: |
