@@ -36,16 +36,14 @@ jobs:
         with:
           version: '6.4.1'
           host: 'mac'
-          dir: '~/Qt/'
+          dir: '${{ github.workspace }}/Qt/'
           install-deps: 'true'
           cache: 'true'
           cache-key-prefix: 'install-qt-action'
 
       - name: Qt test
         run: |
-          cd ~
-          pwd
-          cd '~/Qt/Qt/'
+          cd '${{ github.workspace }}/Qt/Qt/'
           pwd
           ls
           
