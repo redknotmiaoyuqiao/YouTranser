@@ -11,15 +11,6 @@ cd ../
 basepath=$(cd `dirname $0`; pwd)
 echo ${basepath}
 
-if [ ! -d ./EyerLib ];then 
-    git clone https://gitee.com/redknot/EyerLib
-fi
-
-if [ -d ./EyerLib ];then 
-    cd EyerLib
-    git pull origin master
-fi
-
 cd ${basepath}/EyerLib/src
 
 if [ -d ./build ];then 
@@ -34,6 +25,7 @@ cmake ../ \
 -DGLRender=ON \
 -DGL_MESA=OFF \
 -DEyerG=ON \
+-DGLRender=OFF \
 -DENABLE_EYER_TEST=OFF \
 -DCMAKE_INSTALL_PREFIX=${basepath}/EyerLib/src/install
 

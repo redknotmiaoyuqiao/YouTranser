@@ -8,34 +8,34 @@ if [ "reclone" == "${1}" ];then
         rm -rf Eyer3rdpart
     fi
 
-    if [ -d ./Eyer3rdpartOpenCV ];then 
-        rm -rf Eyer3rdpartOpenCV
-    fi
+    # if [ -d ./Eyer3rdpartOpenCV ];then 
+    #     rm -rf Eyer3rdpartOpenCV
+    # fi
 
-    if [ -d ./Eyer3rdpartSkia ];then 
-        rm -rf Eyer3rdpartSkia
-    fi
+    # if [ -d ./Eyer3rdpartSkia ];then 
+    #     rm -rf Eyer3rdpartSkia
+    # fi
 
-    if [ -d ./Eyer3rdpartBGFX ];then 
-        rm -rf Eyer3rdpartBGFX
-    fi
+    # if [ -d ./Eyer3rdpartBGFX ];then 
+    #     rm -rf Eyer3rdpartBGFX
+    # fi
 fi
 
 if [ ! -d ./Eyer3rdpart ];then 
     git clone https://gitee.com/redknot/Eyer3rdpart
 fi
 
-if [ ! -d ./Eyer3rdpartOpenCV ];then 
-    git clone https://gitee.com/redknot/Eyer3rdpartOpenCV
-fi
+# if [ ! -d ./Eyer3rdpartOpenCV ];then 
+#     git clone https://gitee.com/redknot/Eyer3rdpartOpenCV
+# fi
 
-if [ ! -d ./Eyer3rdpartSkia ];then 
-    git clone https://gitee.com/redknot/Eyer3rdpartSkia
-fi
+# if [ ! -d ./Eyer3rdpartSkia ];then 
+#     git clone https://gitee.com/redknot/Eyer3rdpartSkia
+# fi
 
-if [ ! -d ./Eyer3rdpartBGFX ];then 
-    git clone https://gitee.com/redknot/Eyer3rdpartBGFX
-fi
+# if [ ! -d ./Eyer3rdpartBGFX ];then 
+#     git clone https://gitee.com/redknot/Eyer3rdpartBGFX
+# fi
 
 
 platform=$(uname -a)
@@ -59,14 +59,15 @@ sh make_libvpx.sh
 
 sh make_ffmpeg.sh
 
-sh make_glfw.sh
+# sh make_glfw.sh
 
-sh make_jsoncpp.sh
+# sh make_jsoncpp.sh
 
 sh make_freetype.sh
 
+
 # sh make_skia.sh
 
-sh make_bgfx.sh
+# sh make_bgfx.sh
 
-sh make_libraw.sh
+# sh make_libraw.sh
