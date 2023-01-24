@@ -7,7 +7,7 @@ on:
 jobs:
   build:
     name: Build
-    runs-on: m1max
+    runs-on: [self-hosted, macOS, ARM64]
     steps:
       - uses: actions/checkout@v2
         with:
