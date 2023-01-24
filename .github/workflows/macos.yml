@@ -11,4 +11,5 @@ jobs:
     steps:
       - name: Build 3rdpart
         run: |
-          pwd && cd tools/ && sh make_3rdpart_unix_m1.sh
+          pwd
+          ls
