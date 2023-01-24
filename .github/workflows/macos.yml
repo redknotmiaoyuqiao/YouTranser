@@ -12,6 +12,16 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 1
+          
+      - name: Cache 3rdpart
+        id: cache-lib
+        uses: actions/cache@v3
+        env:
+          cache-name: cache-3rdpart-libs
+        with:
+          path: Lib
+          key: eyer3rdpart
+          
       - name: Build 3rdpart
         run: |
           uname -a
