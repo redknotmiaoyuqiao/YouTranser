@@ -14,8 +14,7 @@ jobs:
           fetch-depth: 1
       - name: Build 3rdpart
         run: |
-          pwd
-          ls
-          cd tools
-          ls
-          sh make_3rdpart_unix_m1.sh
+          uname -a
+          yasm
+          nasm
+          cmake
