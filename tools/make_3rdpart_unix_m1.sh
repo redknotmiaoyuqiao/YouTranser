@@ -43,27 +43,29 @@ echo $platform
 
 cd ${basepath}/tools/make_3rdpart_m1
 
-sh make_openssl.sh
+# sh make_openssl.sh
 
-sh make_x264.sh
+# sh make_x264.sh
 
-sh make_x265.sh
+# sh make_x265.sh
 
-sh make_lame.sh
+# sh make_lame.sh
 
-sh make_fdk_aac.sh
+# sh make_fdk_aac.sh
 
 sh mske_libpng.sh
 
-sh make_libvpx.sh
+# sh make_libvpx.sh
 
-sh make_ffmpeg.sh
+# sh make_ffmpeg.sh
+
+
 
 # sh make_glfw.sh
 
 # sh make_jsoncpp.sh
 
-sh make_freetype.sh
+# sh make_freetype.sh
 
 
 # sh make_skia.sh
