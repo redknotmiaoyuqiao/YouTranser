@@ -15,7 +15,8 @@ jobs:
       - name: Build 3rdpart
         run: |
           uname -a
-          brew
+          brew install yasm
+          brew install nasm
           yasm
           nasm
           cmake
