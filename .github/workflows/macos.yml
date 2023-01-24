@@ -36,6 +36,17 @@ jobs:
         with:
           version: 6.4.1
           cached: 'true'
+
+      - name: Config QT
+        run: |
+          pwd
+          ls
+          cd ..
+          pwd
+          ls
+          cd ..
+          pwd
+          ls
           
       - name: Build 3rdpart
         run: |
