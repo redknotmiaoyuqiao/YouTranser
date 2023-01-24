@@ -17,9 +17,17 @@ jobs:
           uname -a
           brew install yasm
           brew install nasm
+          cd tools/
+          ls
+          sh make_3rdpart_unix_m1.sh
           
       - name: Build EyerLib
         run: |
           cd tools/
           ls
           sh make_eyer_lib_m1.sh
+          
+      - name: Check
+        run: |
+          cd Lib
+          ls
