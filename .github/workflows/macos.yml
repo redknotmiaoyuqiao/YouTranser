@@ -31,6 +31,15 @@ jobs:
           path: Lib
           key: eyer3rdpart
           
+      - name: Cache yasm nams
+        id: cache-ynasm
+        uses: actions/cache@v3
+        env:
+          cache-name: cache-ynasm-brew
+        with:
+          path: /usr/local/Cellar
+          key: cacheynasm
+          
       - name: Build 3rdpart
         run: |
           uname -a
