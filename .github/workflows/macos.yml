@@ -45,7 +45,7 @@ jobs:
         run: |
           cd tools/
           ls
-          # sh make_eyer_lib_m1.sh
+          sh make_eyer_lib_m1.sh
           
       - name: Check
         run: |
