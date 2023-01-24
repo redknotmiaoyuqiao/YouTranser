@@ -1,0 +1,12 @@
+build/
+install/
+3rdpart/
+.vscode/
+*.user
+.idea/
+test_build/
+emcc_build/
+build_*/
+EyerLib_install_*
+cmake-build*/
+wasm_build/

@@ -7,7 +7,6 @@ Eyer3rdpartOpenCV/
 Eyer3rdpartSkia/
 Eyer3rdpartBGFX/
 .vscode/
-EyerLib/
 *.class
 .idea/
 build*/
