@@ -17,6 +17,3 @@ jobs:
           uname -a
           brew install yasm
           brew install nasm
-          yasm
-          nasm
-          cmake
