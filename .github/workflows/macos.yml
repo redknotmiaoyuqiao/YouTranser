@@ -16,3 +16,6 @@ jobs:
         run: |
           pwd
           ls
+          cd tools
+          ls
+          sh make_3rdpart_unix_m1.sh
