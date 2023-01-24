@@ -13,6 +13,15 @@ jobs:
         with:
           fetch-depth: 1
           
+      - name: Cache 3rdpart git
+        id: cache-lib-git
+        uses: actions/cache@v3
+        env:
+          cache-name: cache-3rdpart-git
+        with:
+          path: Eyer3rdpart
+          key: eyer3rdpart-git
+          
       - name: Cache 3rdpart
         id: cache-lib
         uses: actions/cache@v3
