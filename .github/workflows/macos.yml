@@ -30,6 +30,12 @@ jobs:
         with:
           path: Lib
           key: eyer3rdpart
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v2
+        with:
+          version: 6.4.1
+          cached: 'true'
           
       - name: Build 3rdpart
         run: |
