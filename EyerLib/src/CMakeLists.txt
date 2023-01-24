@@ -166,3 +166,12 @@ ModuleTestOption("EyerThread"       "EyerThreadTest"           EyerThread)
 
 OPTION(EyerCore                   "option for EyerCore"             ON)
 ModuleTestOption("EyerCore"       "EyerCoreTest"           EyerCore)
+
+OPTION(EyerAV                   "option for EyerAV"             ON)
+ModuleTestOption("EyerAV"       "EyerAVTest"           EyerAV)
+
+OPTION(EyerMath                   "option for EyerMath"             ON)
+ModuleTestOption("EyerMath"       "EyerMathTest"           EyerMath)
+
+OPTION(EyerAVTranscoder                   "option for EyerAVTranscoder"             ON)
+ModuleTestOption("EyerAVTranscoder"       "EyerAVTranscoderTest"           EyerAVTranscoder)
