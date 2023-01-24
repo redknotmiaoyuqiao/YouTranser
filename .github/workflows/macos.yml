@@ -36,6 +36,7 @@ jobs:
           uname -a
           brew install yasm
           brew install nasm
+          brew install automake
           cd tools/
           ls
           sh make_3rdpart_unix_m1.sh
