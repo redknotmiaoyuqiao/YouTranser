@@ -36,16 +36,16 @@ jobs:
         with:
           version: '6.4.1'
           host: 'mac'
-          dir: '${{ github.workspace }}/Qt/'
+          dir: '${{ github.workspace }}/../Qt/'
           install-deps: 'true'
           cache: 'true'
           cache-key-prefix: 'install-qt-action'
-          
-      - name: Config QT
+
+      - name: Qt test
         run: |
+          cd '${{ github.workspace }}/../Qt/'
+          pwd
           ls
-          macdeployqt
-          qmake
           
       - name: Build 3rdpart
         run: |
