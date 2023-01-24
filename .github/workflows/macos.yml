@@ -9,6 +9,9 @@ jobs:
     name: Build
     runs-on: macos-latest
     steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
       - name: Build 3rdpart
         run: |
           pwd
