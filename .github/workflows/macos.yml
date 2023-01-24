@@ -39,14 +39,7 @@ jobs:
 
       - name: Config QT
         run: |
-          pwd
-          ls
-          cd ..
-          pwd
-          ls
-          cd ..
-          pwd
-          ls
+          which qmake
           
       - name: Build 3rdpart
         run: |
