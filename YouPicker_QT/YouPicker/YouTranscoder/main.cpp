@@ -18,8 +18,7 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-
-
+    
     QStringList list = QStyleFactory::keys();
     foreach(const QString &str,list) {
         qDebug() << str << Qt::endl;
@@ -67,11 +66,11 @@ int main(int argc, char *argv[])
 #endif
     // loading.show();
 
-    // YouTransMainWindow mainWin;
-    // mainWin.show();
+    YouTransMainWindow mainWin;
+    mainWin.show();
 
-    YouTransAboutWindow about;
-    about.show();
+    // YouTransAboutWindow about;
+    // about.show();
 
     return a.exec();
 }

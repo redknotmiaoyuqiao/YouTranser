@@ -8,8 +8,8 @@
         <file>win_icon.ico</file>
     </qresource>
 
-    <qresource prefix="/font/">
-        <file>SmileySans-Oblique.otf</file>
+    <qresource prefix="/docs/">
+        <file>thirdPart_LICENSE.md</file>
     </qresource>
     
 </RCC>
