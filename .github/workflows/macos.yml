@@ -83,5 +83,5 @@ jobs:
 
       - uses: actions/upload-artifact@v2
         with:
-          name: YouTranser_macos.zip
+          name: YouTranser_macos_qt_6_4_1.zip
           path: YouPicker_QT/action_build/YouTranscoder/YouTranser.dmg
