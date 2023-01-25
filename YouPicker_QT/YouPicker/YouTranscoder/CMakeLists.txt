@@ -111,8 +111,6 @@ ELSEIF (CMAKE_SYSTEM_NAME MATCHES "Windows")
     target_link_libraries(YouTranser PRIVATE
         YouCommon
 
-        YouPickerSession
-
         EyerAVTranscoder
 
         EyerAV
