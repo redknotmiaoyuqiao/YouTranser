@@ -115,8 +115,6 @@ ELSEIF (CMAKE_SYSTEM_NAME MATCHES "Windows")
 
         EyerAV
 
-        EyerSQLite
-
         EyerMath
 
         EyerCore
@@ -162,8 +160,6 @@ ELSEIF (CMAKE_SYSTEM_NAME MATCHES "Darwin")
         EyerAVTranscoder
 
         EyerAV
-
-        EyerSQLite
 
         EyerMath
 
