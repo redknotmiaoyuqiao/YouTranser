@@ -3,12 +3,15 @@
 
 #include "YouTransAppConfig.hpp"
 #include "YouTransConfig.hpp"
+#include "YouTransAboutWindow.hpp"
 
 #include <QFileDialog>
 #include <QDebug>
 #include <QSettings>
 #include <QStandardItemModel>
 #include <QMessageBox>
+#include <QToolBar>
+#include <QMenuBar>
 
 YouTransMainWindow::YouTransMainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -16,6 +19,14 @@ YouTransMainWindow::YouTransMainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    // Tool Bar
+    QMenuBar * mainMenuBar = menuBar();
+
+    QMenu * menuHelp = mainMenuBar->addMenu("帮助");
+
+    QAction * actionAbout = menuHelp->addAction("关于");
+    connect(actionAbout,      SIGNAL(triggered()),    this,   SLOT(AboutActionClickListener()));
+    
     Eyer::YouTransAppConfig config;
     setWindowTitle(config.GetAppName());
     setWindowIcon(QIcon(config.GetLogoPath()));
@@ -294,13 +305,8 @@ int YouTransMainWindow::UpdateSystemLabel()
     return 0;
 }
 
-int YouTransMainWindow::SetStatusUI(MainStatus status)
+void YouTransMainWindow::AboutActionClickListener()
 {
-    if(status == MainStatus::ING){
-
-    }
-    else {
-
-    }
-    return 0;
+    YouTransAboutWindow * about = new YouTransAboutWindow(this);
+    about->show();
 }

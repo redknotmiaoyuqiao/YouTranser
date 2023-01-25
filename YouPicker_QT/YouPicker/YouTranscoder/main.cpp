@@ -18,7 +18,7 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    
+
     QStringList list = QStyleFactory::keys();
     foreach(const QString &str,list) {
         qDebug() << str << Qt::endl;

@@ -45,6 +45,8 @@ public slots:
     void TaskItem_OnTaskFail(int code);
     void TaskItem_OnRemove(TaskItem *);
 
+    void AboutActionClickListener();
+
 private:
 
     void StartTranscodeClickListenerInternal();
@@ -54,8 +56,6 @@ private:
     YouTransConfig * configWindow = nullptr;
 
     YouTranscoderParams params;
-
-    int SetStatusUI(MainStatus status);
 };
 
 #endif // YOUTRANSMAINWINDOW_HPP
