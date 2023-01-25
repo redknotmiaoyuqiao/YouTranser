@@ -71,7 +71,7 @@ jobs:
       - name: Build Qt Project
         run: |
           cd YouPicker_QT
-          mkidr action_build
+          mkdir action_build
           cd action_build
           cmake ../YouPicker -DCMAKE_PREFIX_PATH=${{ github.workspace }}/Qt/Qt/6.4.1/macos/
           make
