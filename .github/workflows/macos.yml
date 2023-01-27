@@ -9,10 +9,6 @@ jobs:
     name: Build
     runs-on: macos-11.0
     steps:
-      - name: Check
-        run: |
-          arch -arm64 zsh
-          
       - uses: actions/checkout@v2
         with:
           fetch-depth: 1
