@@ -25,6 +25,8 @@ namespace Eyer
         static EyerAVCodecID CODEC_ID_FLAC;
 
         static EyerAVCodecID CODEC_ID_PCM_S16LE;
+        static EyerAVCodecID CODEC_ID_PCM_S24LE;
+        static EyerAVCodecID CODEC_ID_PCM_S32LE;
 
         static EyerAVCodecID GetCodecIdById(int id);
 

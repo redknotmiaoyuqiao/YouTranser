@@ -26,7 +26,7 @@ YouTransMainWindow::YouTransMainWindow(QWidget *parent) :
 
     QAction * actionAbout = menuHelp->addAction("关于");
     connect(actionAbout,      SIGNAL(triggered()),    this,   SLOT(AboutActionClickListener()));
-    
+
     Eyer::YouTransAppConfig config;
     setWindowTitle(config.GetAppName());
     setWindowIcon(QIcon(config.GetLogoPath()));

@@ -59,15 +59,15 @@ int main(int argc, char *argv[])
     */
 
     Eyer::YouTransAppConfig app;
-    // Eyer::YouTransLoading loading(app);
+    Eyer::YouTransLoading loading(app);
 #ifdef WIN32
     QDesktopWidget *desktop = QApplication::desktop();
     loading.move((desktop->width() - loading.width())/ 2, (desktop->height() - loading.height()) /2);
 #endif
-    // loading.show();
+    loading.show();
 
-    YouTransMainWindow mainWin;
-    mainWin.show();
+    // YouTransMainWindow mainWin;
+    // mainWin.show();
 
     // YouTransAboutWindow about;
     // about.show();

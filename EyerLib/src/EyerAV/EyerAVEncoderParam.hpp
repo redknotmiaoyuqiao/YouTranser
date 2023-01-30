@@ -40,6 +40,7 @@ namespace Eyer
         int InitMP3(EyerAVChannelLayout _channelLayout, EyerAVSampleFormat _sampleFormat, int _sample_rate);
         int InitFLAC(EyerAVChannelLayout _channelLayout, EyerAVSampleFormat _sampleFormat, int _sample_rate);
         int InitPCM_S16LE(EyerAVChannelLayout _channelLayout, EyerAVSampleFormat _sampleFormat, int _sample_rate);
+        int InitPCM_S32LE(EyerAVChannelLayout _channelLayout, EyerAVSampleFormat _sampleFormat, int _sample_rate);
 
         int InitAudio(EyerAVCodecID codecId, EyerAVChannelLayout _channelLayout, EyerAVSampleFormat _sampleFormat, int _sample_rate);
 

@@ -316,6 +316,29 @@ namespace Eyer {
             piml->codecContext->channel_layout = param.channelLayout.GetFFmpegId();
             piml->codecContext->channels = av_get_channel_layout_nb_channels(piml->codecContext->channel_layout);
         }
+        if (param.codecId == EyerAVCodecID::CODEC_ID_PCM_S32LE) {
+            codec = avcodec_find_encoder(AV_CODEC_ID_PCM_S32LE);
+
+            if (piml->codecContext != nullptr) {
+                if (avcodec_is_open(piml->codecContext)) {
+                    avcodec_close(piml->codecContext);
+                }
+                avcodec_free_context(&piml->codecContext);
+                piml->codecContext = nullptr;
+
+                return -1;
+            }
+
+            piml->codecContext = avcodec_alloc_context3(codec);
+
+            piml->codecContext->codec_type = AVMEDIA_TYPE_AUDIO;
+            piml->codecContext->sample_fmt = (AVSampleFormat)param.sampleFormat.ffmpegId;
+
+            piml->codecContext->sample_rate = param.sample_rate;
+
+            piml->codecContext->channel_layout = param.channelLayout.GetFFmpegId();
+            piml->codecContext->channels = av_get_channel_layout_nb_channels(piml->codecContext->channel_layout);
+        }
 
         int ret = avcodec_open2(piml->codecContext, codec, &dict);
 

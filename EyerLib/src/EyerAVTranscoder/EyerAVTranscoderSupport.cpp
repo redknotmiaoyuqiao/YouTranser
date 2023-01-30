@@ -33,11 +33,13 @@ namespace Eyer
             supportList.push_back(EyerAVCodecID::CODEC_ID_AAC);
             supportList.push_back(EyerAVCodecID::CODEC_ID_MP3);
             supportList.push_back(EyerAVCodecID::CODEC_ID_PCM_S16LE);
+            supportList.push_back(EyerAVCodecID::CODEC_ID_PCM_S32LE);
         }
         else if(fileFmt == EyerAVFileFmt::MOV) {
             supportList.push_back(EyerAVCodecID::CODEC_ID_AAC);
             supportList.push_back(EyerAVCodecID::CODEC_ID_MP3);
             supportList.push_back(EyerAVCodecID::CODEC_ID_PCM_S16LE);
+            supportList.push_back(EyerAVCodecID::CODEC_ID_PCM_S32LE);
         }
         return supportList;
     }
@@ -112,6 +114,9 @@ namespace Eyer
         else if(codecId == EyerAVCodecID::CODEC_ID_PCM_S16LE){
             codec = avcodec_find_encoder((AVCodecID)codecId.GetFFmpegId());
         }
+        else if(codecId == EyerAVCodecID::CODEC_ID_PCM_S32LE){
+            codec = avcodec_find_encoder((AVCodecID)codecId.GetFFmpegId());
+        }
         else {
             return std::vector<EyerAVChannelLayout>();
         }
@@ -148,7 +153,7 @@ namespace Eyer
         else if(codecId == EyerAVCodecID::CODEC_ID_MP3) {
             codec = avcodec_find_encoder((AVCodecID)codecId.GetFFmpegId());
         }
-        else if(codecId == EyerAVCodecID::CODEC_ID_PCM_S16LE) {
+        else if(codecId == EyerAVCodecID::CODEC_ID_PCM_S16LE || codecId == EyerAVCodecID::CODEC_ID_PCM_S32LE) {
             codec = avcodec_find_encoder((AVCodecID)codecId.GetFFmpegId());
         }
         else {
@@ -190,6 +195,9 @@ namespace Eyer
         }
         else if(codecId == EyerAVCodecID::CODEC_ID_PCM_S16LE){
             return EyerAVSampleFormat::SAMPLE_FMT_S16;
+        }
+        else if(codecId == EyerAVCodecID::CODEC_ID_PCM_S32LE){
+            return EyerAVSampleFormat::SAMPLE_FMT_S32;
         }
         return EyerAVSampleFormat::UNKNOW;
     }

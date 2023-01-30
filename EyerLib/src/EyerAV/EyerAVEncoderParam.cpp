@@ -184,6 +184,15 @@ namespace Eyer
         return 0;
     }
 
+    int EyerAVEncoderParam::InitPCM_S32LE(EyerAVChannelLayout _channelLayout, EyerAVSampleFormat _sampleFormat, int _sample_rate)
+    {
+        codecId         = EyerAVCodecID::CODEC_ID_PCM_S32LE;
+        channelLayout   = _channelLayout;
+        sample_rate     = _sample_rate;
+        sampleFormat    = _sampleFormat;
+        return 0;
+    }
+
     int EyerAVEncoderParam::InitAudio(EyerAVCodecID _codecId, EyerAVChannelLayout _channelLayout, EyerAVSampleFormat _sampleFormat, int _sample_rate)
     {
         codecId         = _codecId;

@@ -31,6 +31,9 @@ namespace Eyer
         Eyer::YouTransAppConfig app;
         YouTransMainWindow * main = new YouTransMainWindow();
         main->show();
+
+        // YouTransLogin * login = new YouTransLogin(app);
+        // login->show();
         return 0;
     }
 }

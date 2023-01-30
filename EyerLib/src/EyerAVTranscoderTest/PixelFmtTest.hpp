@@ -279,6 +279,43 @@ TEST(EyerAVTranscoder, EyerAVTranscoderTest_ALL_KEEPSAME_MP3)
 }
 
 
+TEST(EyerAVTranscoder, EyerAVTranscoderTest_ALL_KEEPSAME_PCMS32)
+{
+    Eyer::EyerString inputPath = "./panasonic_S5_h264_1920x1080_yuv420p_30fps_wedding2.MOV";
+
+    Eyer::EyerString outputPath =   Eyer::EyerString("./") + "S5_AVC_ALL_KEEP_SAME_PCMS32_out.MOV";
+
+    Eyer::EyerAVTranscoderParams params;
+    params.SetVideoCodecId(Eyer::EyerAVCodecID::CODEC_ID_H265);
+    params.SetVideoPixelFormat(Eyer::EyerAVPixelFormat::EYER_KEEP_SAME);
+
+    params.SetAudioCodecId(Eyer::EyerAVCodecID::CODEC_ID_PCM_S32LE);
+    params.SetChannelLayout(Eyer::EyerAVChannelLayout::EYER_KEEP_SAME);
+    params.SetSampleRate(SAMPLE_RATE_KEEP_SAME);
+
+    MyEyerAVTranscoderListener listener;
+
+    Eyer::EyerAVTranscoder transcoder(inputPath);
+    transcoder.SetOutputPath(outputPath);
+    transcoder.SetParams(params);
+    transcoder.SetListener(&listener);
+    int ret = transcoder.Transcode(nullptr);
+    if(ret){
+        EyerLog("%s\n", transcoder.GetErrorDesc().c_str());
+    }
+    ASSERT_EQ(ret, 0);
+
+    Eyer::EyerAVReader reader(outputPath);
+    reader.Open();
+    int audioIndex = reader.GetAudioStreamIndex();
+    Eyer::EyerAVStream audioStream = reader.GetStream(audioIndex);
+
+    ASSERT_EQ(audioStream.GetSampleRate(), 48000);
+    ASSERT_EQ(audioStream.GetChannels(), 2);
+    reader.Close();
+}
+
+
 TEST(EyerAVTranscoder, EyerAVTranscoderTest_ALL_KEEPSAME_PCMS16)
 {
     Eyer::EyerString inputPath = "./panasonic_S5_h264_1920x1080_yuv420p_30fps_wedding2.MOV";

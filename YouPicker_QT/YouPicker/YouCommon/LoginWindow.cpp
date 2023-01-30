@@ -74,10 +74,14 @@ void LoginWindow::LoginClickListener()
 
     post_data.append("email=" + QUrl::toPercentEncoding(email) + "&");
     post_data.append("password=" +  QUrl::toPercentEncoding(password) + "&");
-#if defined(Q_OS_WIN32)
+#if defined(Q_OS_WIN)
     post_data.append("platform=windows&");
-#else
+#elif defined(Q_OS_OSX)
     post_data.append("platform=macosx&");
+#elif defined(Q_OS_LINUX)
+    post_data.append("platform=linux&");
+#else
+    post_data.append("platform=other&");
 #endif
     QString params = QString("app_name=") + app.GetAppId() + "&" + QString("version=") + app.GetVersion() + "";
     post_data.append(params.toUtf8());

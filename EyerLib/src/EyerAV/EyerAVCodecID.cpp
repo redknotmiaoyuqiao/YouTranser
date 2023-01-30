@@ -21,6 +21,8 @@ namespace Eyer
     EyerAVCodecID EyerAVCodecID::CODEC_ID_FLAC      (AV_CODEC_ID_FLAC + 10000, AV_CODEC_ID_FLAC, "AV_CODEC_ID_FLAC", "FLAC");
 
     EyerAVCodecID EyerAVCodecID::CODEC_ID_PCM_S16LE (AV_CODEC_ID_PCM_S16LE + 10000, AV_CODEC_ID_PCM_S16LE, "CODEC_ID_PCM_S16LE", "PCM_S16LE");
+    EyerAVCodecID EyerAVCodecID::CODEC_ID_PCM_S24LE (AV_CODEC_ID_PCM_S24LE + 10000, AV_CODEC_ID_PCM_S24LE, "CODEC_ID_PCM_S24LE", "PCM_S24LE");
+    EyerAVCodecID EyerAVCodecID::CODEC_ID_PCM_S32LE (AV_CODEC_ID_PCM_S32LE + 10000, AV_CODEC_ID_PCM_S32LE, "CODEC_ID_PCM_S32LE", "PCM_S32LE");
 
     EyerAVCodecID EyerAVCodecID::GetCodecIdById(int id)
     {
@@ -62,6 +64,12 @@ namespace Eyer
 
         else if(id == CODEC_ID_PCM_S16LE.GetId()){
             return CODEC_ID_PCM_S16LE;
+        }
+        else if(id == CODEC_ID_PCM_S24LE.GetId()){
+            return CODEC_ID_PCM_S24LE;
+        }
+        else if(id == CODEC_ID_PCM_S32LE.GetId()){
+            return CODEC_ID_PCM_S32LE;
         }
 
         return CODEC_ID_UNKNOW;

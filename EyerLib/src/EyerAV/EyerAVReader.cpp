@@ -7,6 +7,35 @@
 #include "EyerAVPixelFormat.hpp"
 
 namespace Eyer {
+    /*
+    FILE * f = nullptr;
+    static int read_packet(void *opaque, uint8_t *buf, int buf_size)
+    {
+        if(f == nullptr){
+            f = fopen("/Users/bytedance/Desktop/ZZZ.mp4", "rb");
+        }
+
+        int ret = fread(buf, 1, buf_size, f);
+
+        printf("want: %d, fread: %d\n", buf_size, ret);
+
+        return ret;
+    }
+
+    static int64_t seek(void *opaque, int64_t offset, int whence)
+    {
+        if(f == nullptr){
+            f = fopen("/Users/bytedance/Desktop/ZZZ.mp4", "rb");
+        }
+
+        if(whence == AVSEEK_SIZE){
+            return 36479332;
+        }
+
+        fseek(f, offset, SEEK_SET);
+        return offset;
+    }
+    */
     EyerAVReader::EyerAVReader(EyerString _path) {
         piml = new EyerAVReaderPrivate();
 
@@ -16,6 +45,12 @@ namespace Eyer {
         avformat_network_init();
 
         piml->formatCtx = avformat_alloc_context();
+
+        /*
+        constexpr int32_t buffer_size = 16384; // 16 KByte
+        unsigned char * buffer = new unsigned char[buffer_size];
+        piml->formatCtx->pb = avio_alloc_context(buffer, buffer_size, 0, nullptr, read_packet, NULL, seek);
+        */
     }
 
     EyerAVReader::~EyerAVReader() {

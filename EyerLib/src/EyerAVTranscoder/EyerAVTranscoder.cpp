@@ -410,7 +410,7 @@ namespace Eyer
                 return encoder->Init(encoderParam);
             }
 
-            else if(params.GetAudioCodecId() == EyerAVCodecID::CODEC_ID_PCM_S16LE){
+            else if(params.GetAudioCodecId() == EyerAVCodecID::CODEC_ID_PCM_S16LE || params.GetAudioCodecId() == EyerAVCodecID::CODEC_ID_PCM_S32LE){
                 EyerAVCodecID audioCodec = params.GetAudioCodecId();
                 EyerAVChannelLayout channelLayout = params.GetAudioChannelLayout();
                 int sampleRate = params.GetSampleRate();
@@ -438,11 +438,21 @@ namespace Eyer
                     errorDesc = "采样率编码器不支持";
                     return -1;
                 }
-                encoderParam.InitPCM_S16LE(
-                        channelLayout,
-                        support.GetHighestSampleFmt(audioCodec),
-                        sampleRate
-                );
+
+                if(params.GetAudioCodecId() == EyerAVCodecID::CODEC_ID_PCM_S16LE){
+                    encoderParam.InitPCM_S16LE(
+                            channelLayout,
+                            support.GetHighestSampleFmt(audioCodec),
+                            sampleRate
+                    );
+                }
+                if(params.GetAudioCodecId() == EyerAVCodecID::CODEC_ID_PCM_S32LE){
+                    encoderParam.InitPCM_S32LE(
+                            channelLayout,
+                            support.GetHighestSampleFmt(audioCodec),
+                            sampleRate
+                    );
+                }
                 return encoder->Init(encoderParam);
             }
             encoder->Init(encoderParam);

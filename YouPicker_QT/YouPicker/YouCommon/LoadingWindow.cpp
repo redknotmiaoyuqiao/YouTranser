@@ -90,10 +90,14 @@ void LoadingWindow::timeoutSig()
     QByteArray post_data;
 
     post_data.append("token=" + QUrl::toPercentEncoding(token) + "&");
-#if defined(Q_OS_WIN32)
+#if defined(Q_OS_WIN)
     post_data.append("platform=windows&");
-#else
+#elif defined(Q_OS_OSX)
     post_data.append("platform=macosx&");
+#elif defined(Q_OS_LINUX)
+    post_data.append("platform=linux&");
+#else
+    post_data.append("platform=other&");
 #endif
     // post_data.append(QString("app_name=") + app.GetAppId() + "&");
     // post_data.append(QString("version=") + app.GetVersion() + "");
