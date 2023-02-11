@@ -36,15 +36,13 @@ ELSEIF (CMAKE_SYSTEM_NAME MATCHES "Android")
     MESSAGE(STATUS "current platform: Android")
 ELSEIF (CMAKE_SYSTEM_NAME MATCHES "Darwin")
     MESSAGE(STATUS "current platform: Darwin")
-    set(CMAKE_EXE_LINKER_FLAGS
+    SET(CMAKE_EXE_LINKER_FLAGS
         "-framework QuartzCore -framework Metal -framework IOKit -framework AudioToolbox -framework CoreGraphics -framework CoreMedia -framework Cocoa -framework VideoToolbox -framework AVFoundation -framework Security -framework CoreFoundation -framework CoreVideo -framework OpenGL -framework AppKit -framework CoreImage -framework VideoDecodeAcceleration"
     )
 ELSEIF (CMAKE_SYSTEM_NAME MATCHES "iOS")
     MESSAGE(STATUS "current platform: iOS")
-    ADD_DEFINITIONS(-D EYER_PLATFORM_IOS)
 ELSEIF (CMAKE_SYSTEM_NAME MATCHES "Emscripten")
     MESSAGE(STATUS "current platform: Emscripten")
-    ADD_DEFINITIONS(-D EYER_PLATFORM_EMSCRIPTEN)
 ELSE ()
     MESSAGE(STATUS "other platform: ${CMAKE_SYSTEM_NAME}")
 ENDIF (CMAKE_SYSTEM_NAME MATCHES "Linux")
