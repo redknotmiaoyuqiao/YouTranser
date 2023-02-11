@@ -80,28 +80,38 @@ set_property(SOURCE "${${PROJECT_NAME}_MAC_ICON}" PROPERTY
 qt_add_resources(QRC_FILES ${Qrc_Files})
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-    qt_add_executable(YouTranser
-        MACOSX_BUNDLE
-        ${${PROJECT_NAME}_MAC_ICON}
-        ${PROJECT_SOURCES}
-        ${QRC_FILES}
-    )
+    MESSAGE("QT6")
 else()
+    MESSAGE("QT5")
+endif()
+
+IF (CMAKE_SYSTEM_NAME MATCHES "Windows")
+    MESSAGE(STATUS "current platform: Windows")
     add_executable(YouTranser
         ${${PROJECT_NAME}_MAC_ICON}
         ${PROJECT_SOURCES}
         ${QRC_FILES}
         "win_icon.rc"
     )
-endif()
+ELSEIF (CMAKE_SYSTEM_NAME MATCHES "Darwin")
+    MESSAGE(STATUS "current platform: Darwin")
+    qt_add_executable(YouTranser
+        MACOSX_BUNDLE
+        ${${PROJECT_NAME}_MAC_ICON}
+        ${PROJECT_SOURCES}
+        ${QRC_FILES}
+    )
+ENDIF (CMAKE_SYSTEM_NAME MATCHES "Windows")
 
-set_property(TARGET ${PROJECT_NAME} PROPERTY
-      MACOSX_BUNDLE_INFO_PLIST "${PROJECT_SOURCE_DIR}/macOS/Info.plist.in")
+
 
 
 IF (CMAKE_SYSTEM_NAME MATCHES "Windows")
     MESSAGE(STATUS "current platform: Windows")
 ENDIF (CMAKE_SYSTEM_NAME MATCHES "Windows")
+
+set_property(TARGET ${PROJECT_NAME} PROPERTY
+      MACOSX_BUNDLE_INFO_PLIST "${PROJECT_SOURCE_DIR}/macOS/Info.plist.in")
 
 
 IF (CMAKE_SYSTEM_NAME MATCHES "Linux")
@@ -214,3 +224,6 @@ install(TARGETS YouTranser
 if(QT_VERSION_MAJOR EQUAL 6)
     qt_finalize_executable(YouTranser)
 endif()
+
+
+# $CMAKE_HOME/bin/cmake ../YouPicker/ -DCMAKE_PREFIX_PATH=C:/Qt/6.2.4/mingw_64/ -G "MinGW Makefiles"

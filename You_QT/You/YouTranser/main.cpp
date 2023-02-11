@@ -3,9 +3,10 @@
 #include <QFile>
 #include <QStyleFactory>
 #include <QFontDatabase>
+#include <QApplication>
 
 #ifdef WIN32
-#include <QDesktopWidget>
+// #include <QDesktopWidget>
 #endif
 
 #include <MainWindow.h>
@@ -61,8 +62,8 @@ int main(int argc, char *argv[])
     Eyer::YouTransAppConfig app;
     Eyer::YouTransLoading loading(app);
 #ifdef WIN32
-    QDesktopWidget *desktop = QApplication::desktop();
-    loading.move((desktop->width() - loading.width())/ 2, (desktop->height() - loading.height()) /2);
+    // QDesktopWidget *desktop = QApplication::desktop();
+    // loading.move((desktop->width() - loading.width())/ 2, (desktop->height() - loading.height()) /2);
 #endif
     loading.show();
 
