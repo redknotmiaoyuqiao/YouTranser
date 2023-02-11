@@ -70,19 +70,19 @@ jobs:
 
       - name: Build Qt Project
         run: |
-          cd YouPicker_QT
+          cd You_QT
           mkdir action_build
           cd action_build
-          cmake ../YouPicker -DCMAKE_PREFIX_PATH=${{ github.workspace }}/Qt/Qt/6.4.1/macos/
+          cmake ../You -DCMAKE_PREFIX_PATH=${{ github.workspace }}/Qt/Qt/6.4.1/macos/
           make
 
       - name: package
         run: |
-          cd YouPicker_QT/action_build/YouTranscoder/
+          cd You_QT/action_build/YouTranscoder/
           macdeployqt YouTranser.app
           zip -r YouTranser.zip YouTranser.app/
 
       - uses: actions/upload-artifact@v2
         with:
           name: YouTranser_macos.zip
-          path: YouPicker_QT/action_build/YouTranscoder/YouTranser.zip
+          path: You_QT/action_build/YouTranscoder/YouTranser.zip
