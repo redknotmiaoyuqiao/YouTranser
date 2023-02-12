@@ -78,11 +78,11 @@ jobs:
 
       - name: package
         run: |
-          cd You_QT/action_build/YouTranscoder/
+          cd You_QT/action_build/YouTranser/
           macdeployqt YouTranser.app
           zip -r YouTranser.zip YouTranser.app/
 
       - uses: actions/upload-artifact@v2
         with:
           name: YouTranser_macos.zip
-          path: You_QT/action_build/YouTranscoder/YouTranser.zip
+          path: You_QT/action_build/YouTranser/YouTranser.zip
