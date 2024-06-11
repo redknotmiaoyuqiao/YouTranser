@@ -1,4 +1,4 @@
-name: MacOSBuild
+name: MacOS-ARM-Build
 on:
   push:
     branches: [ "master" ]
