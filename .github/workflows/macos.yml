@@ -55,7 +55,7 @@ jobs:
           brew install automake
           cd tools/
           ls
-          sh make_3rdpart_unix_m1.sh
+          sh make_3rdpart_unix_m1.sh a
           
       - name: Build EyerLib
         run: |
