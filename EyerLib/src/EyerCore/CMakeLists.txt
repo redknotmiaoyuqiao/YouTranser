@@ -13,6 +13,8 @@ add_library(
         EyerLog.hpp
         EyerLog.cpp
 
+        EyerLogStatus.cpp
+
         EyerRand.cpp
         EyerTime.cpp
 
@@ -85,6 +87,9 @@ add_library(
         EyerObserverList.hpp
 
         EyerVersion.cpp
+
+        EyerLRUCache.hpp
+        EyerLRUCache.cpp
 )
 
 set(head_files 
@@ -120,6 +125,7 @@ set(head_files
         EyerSharedCount.hpp
         EyerFileReader.hpp
         EyerObserverList.hpp
+        EyerLRUCache.hpp
 )
 
 INSTALL(FILES ${head_files} DESTINATION include/EyerCore)

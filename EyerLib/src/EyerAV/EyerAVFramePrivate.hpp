@@ -14,7 +14,7 @@ namespace Eyer
         AVFrame * frame = nullptr;
         double secPTS = 0.0;
         bool LAST_FRAME_FLAG = false;
-        std::vector<uint8_t *> data;
+        int angle = 0;
     };
 }
 

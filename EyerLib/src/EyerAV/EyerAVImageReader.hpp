@@ -3,6 +3,7 @@
 
 #include "EyerAVFrame.hpp"
 #include "EyerCore/EyerCore.hpp"
+#include "EyerAVReaderCustomIO.hpp"
 
 namespace Eyer
 {
@@ -12,7 +13,7 @@ namespace Eyer
         EyerAVImageReader();
         ~EyerAVImageReader();
 
-        int ReadFrame(EyerAVFrame & frame, const EyerString & path);
+        int ReadFrame(EyerAVFrame & frame, const EyerString & path, EyerAVReaderCustomIO * _customIO = nullptr);
     };
 }
 

@@ -100,7 +100,6 @@ namespace Eyer
                 break;
             }
             // 读取，重裁样
-            // 分配 48000 的空间
             EyerAVFrame inputFrame;
             inputFrame.piml->frame->channel_layout      = piml->inputChannelLayout.GetFFmpegId();
             inputFrame.piml->frame->channels            = av_get_channel_layout_nb_channels(inputFrame.piml->frame->channel_layout);
@@ -195,7 +194,12 @@ namespace Eyer
         av_frame_get_buffer(frame.piml->frame, 1);
 
         av_audio_fifo_read(piml->outputFifo, (void **)frame.piml->frame->data, frame.piml->frame->nb_samples);
-
+        piml->totleOutputSampleNB += frame.piml->frame->nb_samples;
         return 0;
+    }
+
+    int64_t EyerAVResample::GetTotleOutputSampleNB()
+    {
+        return piml->totleOutputSampleNB;
     }
 }

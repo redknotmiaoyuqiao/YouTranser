@@ -6,16 +6,17 @@
 
 namespace Eyer
 {
-    EyerAVDecoderLine::EyerAVDecoderLine(const EyerString & _path, double _startSeekTime, const EyerAVDecoderLineParams & _params)
+    EyerAVDecoderLine::EyerAVDecoderLine(const EyerString & _path, double _startSeekTime, EyerAVReaderCustomIO * _customIO, const EyerAVDecoderLineParams & _params)
     {
         params = _params;
 
         startSeekTime = _startSeekTime;
 
-        reader = new EyerAVReader(_path);
+        reader = new EyerAVReader(_path, _customIO);
+        EyerLog("EyerAVDecoderLine Open: %s\n", _path.c_str());
         int ret = reader->Open();
         if(ret){
-            EyerLog("EyerAVDecoderLine Open Fail: %s\n", _path.c_str());
+            EyerLogE("EyerAVDecoderLine Open Fail: %s\n", _path.c_str());
             return;
         }
 
@@ -37,21 +38,26 @@ namespace Eyer
         }
 
         decoder = new EyerAVDecoder();
-        ret = decoder->Init(videoStream);
+        ret = decoder->Init(videoStream, 1);
         if(ret){
             EyerLog("EyerAVDecoderLine Decoder Init Fail: %s\n", _path.c_str());
             return;
         }
 
+
+        // ret = reader->SeekStream(startSeekTime, videoStreamIndex);
+
         if(startSeekTime > 0.0){
-            ret = reader->Seek(startSeekTime);
+            // ret = reader->Seek(startSeekTime);
+            ret = reader->SeekStream(startSeekTime, videoStreamIndex);
             if(ret){
-                ret = reader->Seek(0);
+                // ret = reader->Seek(0);
+                ret = reader->SeekStream(startSeekTime, videoStreamIndex);
             }
         }
     }
-    EyerAVDecoderLine::EyerAVDecoderLine(const EyerString & path, double _startSeekTime)
-        : EyerAVDecoderLine(path, _startSeekTime, EyerAVDecoderLineParams())
+    EyerAVDecoderLine::EyerAVDecoderLine(const EyerString & path, double _startSeekTime, EyerAVReaderCustomIO * _customIO)
+        : EyerAVDecoderLine(path, _startSeekTime, _customIO, EyerAVDecoderLineParams())
     {
 
     }
@@ -225,6 +231,10 @@ namespace Eyer
             }
 
             ret = decoder->SendPacket(packet);
+            for(int i=0;i<10;i++){
+                // printf("%d ", packet.GetDatePtr()[i]);
+            }
+            // printf("\n");
             if (ret) {
                 return EYER_AV_DECODER_LINE_DECODER_ERROR;
             }

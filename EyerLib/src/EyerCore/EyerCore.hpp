@@ -25,5 +25,6 @@
 #include "EyerObserverList.hpp"
 #include "EyerObserverQueue.hpp"
 #include "EyerMD5.hpp"
+#include "EyerLRUCache.hpp"
 
 #endif

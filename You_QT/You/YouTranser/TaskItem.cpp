@@ -155,7 +155,7 @@ void TaskItem::OnTaskFail(int code)
 int TaskItem::showStatus()
 {
     Eyer::EyerAVTranscoderStatus status = taskThread.GetStatus();
-    int width = ui->task_input_path->fontInfo().pixelSize() * 1.8;
+    int width = ui->task_input_path->fontInfo().pixelSize() * 2.0;
     statusLabel->setMinimumSize(width, width);
     statusLabel->SetStatus(status);
     if(status == Eyer::EyerAVTranscoderStatus::FAIL){

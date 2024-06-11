@@ -22,6 +22,7 @@ namespace Eyer
         if(fileFmt == EyerAVFileFmt::MOV){
             supportList.push_back(EyerAVCodecID::CODEC_ID_H264);
             supportList.push_back(EyerAVCodecID::CODEC_ID_H265);
+            supportList.push_back(EyerAVCodecID::CODEC_ID_PRORES);
         }
         return supportList;
     }
@@ -95,6 +96,21 @@ namespace Eyer
                     pfmt++;
                     continue;
                 }
+                supportList.push_back(format);
+                pfmt++;
+            }
+        }
+        if(codecId == EyerAVCodecID::CODEC_ID_PRORES){
+            const AVCodec * codec = avcodec_find_encoder(AV_CODEC_ID_PRORES);
+            const AVPixelFormat *pfmt = codec->pix_fmts;
+            while (pfmt != NULL && *pfmt  != AV_PIX_FMT_NONE) {
+                EyerAVPixelFormat format = EyerAVPixelFormat::GetByFFmpegId(*pfmt);
+                /*
+                if(format == EyerAVPixelFormat::EYER_YUVA444P10LE){
+                    pfmt++;
+                    continue;
+                }
+                */
                 supportList.push_back(format);
                 pfmt++;
             }
@@ -217,6 +233,17 @@ namespace Eyer
         }
         else if(codecId == EyerAVCodecID::CODEC_ID_H265){
             const AVCodec *codec = avcodec_find_encoder_by_name("libx265");
+            const AVPixelFormat *pfmt = codec->pix_fmts;
+            while (pfmt != NULL && *pfmt != AV_PIX_FMT_NONE) {
+                EyerAVPixelFormat format = EyerAVPixelFormat::GetByFFmpegId(*pfmt);
+                if(format == pixfmt){
+                    return true;
+                }
+                pfmt++;
+            }
+        }
+        else if(codecId == EyerAVCodecID::CODEC_ID_PRORES){
+            const AVCodec *codec = avcodec_find_encoder(AV_CODEC_ID_PRORES);
             const AVPixelFormat *pfmt = codec->pix_fmts;
             while (pfmt != NULL && *pfmt != AV_PIX_FMT_NONE) {
                 EyerAVPixelFormat format = EyerAVPixelFormat::GetByFFmpegId(*pfmt);

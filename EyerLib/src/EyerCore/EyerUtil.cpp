@@ -104,9 +104,36 @@ namespace Eyer
 
     EyerString EyerUtil::Md5(const EyerString & messgae)
     {
-        EyerMD5 md5(messgae.c_str());
-        std::string res = md5.toStr();
+        return EyerString("");
+    }
 
-        return EyerString(res.c_str());
+    EyerString EyerUtil::ReadText(const EyerString & path)
+    {
+        FILE * f = fopen(path.c_str(), "rb");
+        if(f == nullptr){
+            return "";
+        }
+
+        fseek(f, 0, SEEK_END);
+        int len = ftell(f);
+        fseek(f, 0, SEEK_SET);
+
+        uint8_t * data = (uint8_t *)malloc(len + 1);
+        int ret = fread(data, len, 1, f);
+
+        data[len] = '\0';
+        EyerString res(reinterpret_cast<const char *>(data));
+
+        if(data != nullptr){
+            free(data);
+            data = nullptr;
+        }
+
+        if(f != nullptr) {
+            fclose(f);
+            f = nullptr;
+        }
+
+        return res;
     }
 }

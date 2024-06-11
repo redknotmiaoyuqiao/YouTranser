@@ -33,6 +33,16 @@ namespace Eyer
         return *this;
     }
 
+    int EyerAVEncoderParam::InitProres(int _width, int _height, const EyerAVRational & _timebase, const EyerAVPixelFormat & _pixelFormat)
+    {
+        codecId         = EyerAVCodecID::CODEC_ID_PRORES;
+        width           = _width;
+        height          = _height;
+        timebase        = _timebase;
+        pixelFormat     = _pixelFormat;
+        return 0;
+    }
+
     int EyerAVEncoderParam::InitH264(int width, int height, int fps, const EyerAVPixelFormat & pixelFormat, int _crf)
     {
         Eyer::EyerAVRational videoTimebase;
@@ -226,6 +236,16 @@ namespace Eyer
         timebase        = _timebase;
         pixelFormat     = _pixelFormat;
 
+        return 0;
+    }
+
+    int EyerAVEncoderParam::InitSRT()
+    {
+        codecId         = EyerAVCodecID::CODEC_ID_SRT;
+        EyerAVRational _timebase;
+        _timebase.den = 1000;
+        _timebase.num = 1;
+        timebase        = _timebase;
         return 0;
     }
 

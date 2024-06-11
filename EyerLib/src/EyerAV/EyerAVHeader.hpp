@@ -34,5 +34,10 @@
 #include "EyerAVAlphaFrameUtil.hpp"
 #include "EyerAVFileFmt.hpp"
 #include "EyerAVMD5.hpp"
+#include "EyerH264AVCC.hpp"
+#include "EyerAVAudioBox.hpp"
+#include "EyerAVReaderCustomIO.hpp"
+#include "EyerAVSnapshot.hpp"
+#include "EyerAVVideoWriter.hpp"
 
 #endif //EYERLIB_EYERAVHEADER_HPP

@@ -19,8 +19,6 @@ namespace Eyer
         ~EyerAVStream();
 
         EyerAVStream(const EyerAVStream & stream);
-        EyerAVStream(EyerAVStream && stream);
-
         EyerAVStream & operator = (const EyerAVStream & stream);
 
         const int GetStreamId() const;
@@ -29,6 +27,7 @@ namespace Eyer
         const EyerAVMediaType GetType() const;
         const int GetWidth() const;
         const int GetHeight() const;
+        EyerBuffer GetExtradata();
         EyerAVCodecID GetCodecID();
 
         EyerAVRational GetTimebase();
@@ -39,6 +38,8 @@ namespace Eyer
         int GetChannels() const;
         EyerAVSampleFormat GetSampleFormat() const;
         int GetSampleRate() const;
+
+        const int GetAngle() const;
     public:
         EyerAVStreamPrivate * piml = nullptr;
     };

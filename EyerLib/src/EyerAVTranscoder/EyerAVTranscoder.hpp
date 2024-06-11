@@ -6,6 +6,7 @@
 #include "EyerAVTranscodeStream.hpp"
 #include "EyerAVTranscoderStatus.hpp"
 #include "EyerAVTranscoderError.hpp"
+#include "EyerAV/EyerAVReaderCustomIO.hpp"
 
 #define SAMPLE_RATE_KEEP_SAME -2
 
@@ -34,7 +35,9 @@ namespace Eyer
         int SetOutputPath(const EyerString & outputPath);
         int SetParams(const EyerAVTranscoderParams & params);
         int SetListener(EyerAVTranscoderListener * _listener);
-        int Transcode(EyerAVTranscoderInterrupt * interrupt);
+
+        int Transcode_(EyerAVTranscoderInterrupt * interrupt);
+        int Transcode(EyerAVTranscoderInterrupt * interrupt, EyerAVReaderCustomIO * customIO = nullptr);
 
         EyerAVTranscoderStatus GetStatus();
         int SetStatus(const EyerAVTranscoderStatus & _status);
@@ -58,6 +61,10 @@ namespace Eyer
         double lastUpdateTime = 0.0;
 
         EyerAVTranscoderListener * listener = nullptr;
+
+        long long totleTime = 0;
+        long long ioReadTime = 0;
+        long long ioWriteTime = 0;
     };
 }
 

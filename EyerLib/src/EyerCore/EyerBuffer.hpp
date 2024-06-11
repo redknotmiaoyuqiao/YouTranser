@@ -5,12 +5,11 @@
 #include <mutex>
 #include "EyerString.hpp"
 
-#define EYER_BUFFER_CACHE_SIZE 1024*1024
-
 namespace Eyer{
     class EyerBuffer {
     public:
-        EyerBuffer(int size = EYER_BUFFER_CACHE_SIZE);
+        EyerBuffer();
+        EyerBuffer(int size);
         EyerBuffer(uint8_t * _buf, int _bufLen);
         ~EyerBuffer();
 
@@ -25,29 +24,19 @@ namespace Eyer{
 
         int GetBuffer(uint8_t * _buf = nullptr) const;
 
-        int GetLen() const;
-        int SetLen(int _len);
-
         int Clear();
 
-        int WriteDisk(EyerString & path);
-        int ReadFromDisk(EyerString & path);
+        int WriteDisk(const EyerString & path) const;
+        int ReadFromDisk(const EyerString & path);
 
         uint8_t * GetPtr() const;
+        int GetLen() const;
 
-        int PrintfDebug();
+        int SetLen(int len);
 
     private:
-        uint8_t * originBuf = nullptr;
-        int originBufLen = 0;
-
         uint8_t * buf = nullptr;
         int bufLen = 0;
-
-        int ReAlloc(uint8_t ** buf, int len);
-        int ReAlloc(int len);
-
-        int mallocTimes = 0;
     };
 }
 

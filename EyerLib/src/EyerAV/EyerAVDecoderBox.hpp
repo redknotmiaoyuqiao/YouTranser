@@ -12,11 +12,12 @@ namespace Eyer
     class EyerAVDecoderBox
     {
     public:
-        EyerAVDecoderBox(const EyerString & _path);
-        EyerAVDecoderBox(const EyerString & _path, const EyerAVDecoderLineParams & _params);
+        EyerAVDecoderBox(const EyerString & _path, EyerAVReaderCustomIO * _customIO = nullptr);
+        EyerAVDecoderBox(const EyerString & _path, const EyerAVDecoderLineParams & _params, EyerAVReaderCustomIO * _customIO = nullptr);
         ~EyerAVDecoderBox();
 
         int GetFrame(EyerAVFrame & frame, double pts);
+        int GetFrameInternal(EyerAVFrame & frame, double pts);
 
         double GetDuration();
 
@@ -27,6 +28,8 @@ namespace Eyer
         std::vector<EyerAVDecoderLine *> decoderLineCache;
 
         EyerAVDecoderLine * findDecoderLine(double pts);
+
+        EyerAVReaderCustomIO * customIO = nullptr;
     };
 }
 

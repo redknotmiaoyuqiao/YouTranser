@@ -10,6 +10,7 @@ namespace Eyer
     public:
         AVCodecContext * codecContext = nullptr;
         AVRational streamTimebase;
+        int angle = 0;
     };
 }
 

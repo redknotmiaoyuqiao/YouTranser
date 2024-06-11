@@ -9,10 +9,11 @@ namespace Eyer
     {
     public:
         AVCodecParameters * codecpar = nullptr;
-        AVCodecContext * codec = nullptr;
+        // AVCodecContext * codec = nullptr;
         AVRational timebase;
         int stream_id = 0;
         double duration = 0.0;
+        int angle = 0;
     };
 }
 

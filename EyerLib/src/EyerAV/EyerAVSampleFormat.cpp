@@ -36,7 +36,6 @@ namespace Eyer
             return SAMPLE_FMT_DBL;
         }
 
-
         if(ffmpegId == AV_SAMPLE_FMT_U8P){
             return SAMPLE_FMT_U8P;
         }
@@ -88,5 +87,10 @@ namespace Eyer
     const EyerString EyerAVSampleFormat::GetName() const
     {
         return name;
+    }
+
+    int EyerAVSampleFormat::GetBytesPerSample()
+    {
+        return av_get_bytes_per_sample((AVSampleFormat)ffmpegId);
     }
 }

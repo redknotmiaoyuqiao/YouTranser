@@ -23,6 +23,7 @@ namespace Eyer
         int inputBlockSize = 0;
         int outputBlockSize = 0;
 
+        int64_t totleOutputSampleNB = 0;
     };
 }
 

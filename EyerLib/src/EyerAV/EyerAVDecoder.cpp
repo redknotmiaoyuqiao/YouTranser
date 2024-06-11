@@ -8,6 +8,20 @@
 #include "EyerAVPacket.hpp"
 #include "EyerAVFrame.hpp"
 
+
+static enum AVPixelFormat get_hw_format(AVCodecContext *ctx,
+                                        const enum AVPixelFormat *pix_fmts)
+{
+    const enum AVPixelFormat *p;
+
+    for (p = pix_fmts; *p != -1; p++) {
+        EyerLog("*p: %d %d\n", *p, AV_PIX_FMT_YUV422P10LE);
+        if (*p == AV_PIX_FMT_D3D11VA_VLD)
+            return *p;
+    }
+    return AV_PIX_FMT_NONE;
+}
+
 namespace Eyer
 {
     EyerAVDecoder::EyerAVDecoder()
@@ -28,9 +42,11 @@ namespace Eyer
         }
     }
 
-    int EyerAVDecoder::Init(const EyerAVStream & stream, int threadnum)
+    int EyerAVDecoder::Init(const EyerAVStream & stream, int threadnum, EyerAVDecoderOption option)
     {
+        piml->angle = stream.GetAngle();
         piml->streamTimebase = stream.piml->timebase;
+        // EyerLog("num: %d, den: %d\n", stream.piml->timebase.num, stream.piml->timebase.den);
         avcodec_parameters_to_context(piml->codecContext, stream.piml->codecpar);
 
         const AVCodec * codec = nullptr;
@@ -40,17 +56,43 @@ namespace Eyer
         else if(piml->codecContext->codec_id == AV_CODEC_ID_VP8){
             codec = avcodec_find_decoder_by_name("libvpx");
         }
+
         /*
         else if(piml->codecContext->codec_id == AV_CODEC_ID_H264){
-            codec = avcodec_find_decoder_by_name("libopenh264");
+            // codec = avcodec_find_decoder(piml->codecContext->codec_id);
+            // codec = avcodec_find_decoder_by_name("libopenh264");
+            codec = avcodec_find_decoder_by_name("h264_d3d11va");
         }
         */
         else {
             codec = avcodec_find_decoder(piml->codecContext->codec_id);
         }
         piml->codecContext->thread_count = threadnum;
-        int ret = avcodec_open2(piml->codecContext, codec, nullptr);
 
+        if(option == EyerAVDecoderOption::D3D11VA) {
+            AVBufferRef* hw_device_ctx = nullptr;
+            av_hwdevice_ctx_create(&hw_device_ctx, AVHWDeviceType::AV_HWDEVICE_TYPE_D3D11VA, NULL, NULL, NULL);
+            if (hw_device_ctx) {
+                piml->codecContext->hw_device_ctx = hw_device_ctx;
+            }
+            else {
+                EyerLog("Init D3D11VA Error\n");
+            }
+        }
+
+        if(piml->codecContext->codec_id == AV_CODEC_ID_H264) {
+            /*
+            AVBufferRef* hw_device_ctx = nullptr;
+            av_hwdevice_ctx_create(&hw_device_ctx, AVHWDeviceType::AV_HWDEVICE_TYPE_D3D11VA, NULL, NULL, NULL);
+            if (hw_device_ctx) {
+                piml->codecContext->hw_device_ctx = av_buffer_ref(hw_device_ctx);
+            }
+             */
+        }
+
+       //  EyerLog("Codec Name: %d %d\n", piml->codecContext->codec_id, AV_CODEC_ID_PNG);
+
+        int ret = avcodec_open2(piml->codecContext, codec, nullptr);
         return ret;
     }
 
@@ -80,6 +122,7 @@ namespace Eyer
         if(!ret){
             int64_t pts = frame.GetPTS();
             frame.piml->secPTS = pts * (double)piml->streamTimebase.num / piml->streamTimebase.den;
+            frame.piml->angle = GetAngle();
         }
         return ret;
     }
@@ -114,5 +157,10 @@ namespace Eyer
     EyerAVSampleFormat EyerAVDecoder::GetAVSampleFormat()
     {
         return EyerAVSampleFormat::GetByFFmpegId(piml->codecContext->sample_fmt);
+    }
+
+    const int EyerAVDecoder::GetAngle() const
+    {
+        return piml->angle;
     }
 }

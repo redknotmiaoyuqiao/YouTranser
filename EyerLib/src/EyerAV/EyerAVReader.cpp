@@ -1,5 +1,7 @@
 #include "EyerAVReader.hpp"
 
+#include <string.h>
+
 #include "EyerAVReaderPrivate.hpp"
 #include "EyerAVPacketPrivate.hpp"
 #include "EyerAVStreamPrivate.hpp"
@@ -7,50 +9,33 @@
 #include "EyerAVPixelFormat.hpp"
 
 namespace Eyer {
-    /*
-    FILE * f = nullptr;
-    static int read_packet(void *opaque, uint8_t *buf, int buf_size)
+    static int EyerAVReader_Read_Packet(void *opaque, uint8_t *buf, int buf_size)
     {
-        if(f == nullptr){
-            f = fopen("/Users/bytedance/Desktop/ZZZ.mp4", "rb");
-        }
-
-        int ret = fread(buf, 1, buf_size, f);
-
-        printf("want: %d, fread: %d\n", buf_size, ret);
-
-        return ret;
+        EyerAVReaderCustomIO * customIO = (EyerAVReaderCustomIO *)opaque;
+        return customIO->Read(buf, buf_size);
     }
 
-    static int64_t seek(void *opaque, int64_t offset, int whence)
+    static int64_t EyerAVReader_Seek(void *opaque, int64_t offset, int whence)
     {
-        if(f == nullptr){
-            f = fopen("/Users/bytedance/Desktop/ZZZ.mp4", "rb");
-        }
-
-        if(whence == AVSEEK_SIZE){
-            return 36479332;
-        }
-
-        fseek(f, offset, SEEK_SET);
-        return offset;
+        EyerAVReaderCustomIO * customIO = (EyerAVReaderCustomIO *)opaque;
+        return customIO->Seek(offset, whence);
     }
-    */
-    EyerAVReader::EyerAVReader(EyerString _path) {
+
+    EyerAVReader::EyerAVReader(EyerString _path, EyerAVReaderCustomIO * _customIO) {
         piml = new EyerAVReaderPrivate();
-
         piml->path = _path;
-
-        // av_register_all();
+        // av_log_set_level(AV_LOG_WARNING);
+        av_register_all();
         avformat_network_init();
 
         piml->formatCtx = avformat_alloc_context();
 
-        /*
-        constexpr int32_t buffer_size = 16384; // 16 KByte
-        unsigned char * buffer = new unsigned char[buffer_size];
-        piml->formatCtx->pb = avio_alloc_context(buffer, buffer_size, 0, nullptr, read_packet, NULL, seek);
-        */
+        customIO = _customIO;
+        if(customIO != nullptr) {
+            constexpr int32_t buffer_size = 1024 * 1024;
+            unsigned char * buffer = new unsigned char[buffer_size];
+            piml->formatCtx->pb = avio_alloc_context(buffer, buffer_size, 0, customIO, EyerAVReader_Read_Packet, NULL, EyerAVReader_Seek);
+        }
     }
 
     EyerAVReader::~EyerAVReader() {
@@ -66,25 +51,56 @@ namespace Eyer {
     }
 
     int EyerAVReader::Open() {
-        AVDictionary *option = nullptr;
-        // av_dict_set(&option, "decryption_key", "5c1622f4736f4f60a545d048271ebab1", 0);
+//        AVDictionary *option = nullptr;
+//        av_dict_set(&option, "decryption_key", "fa8afa76abca4a59a5a23df79677ca49", 0);
 
-        int ret = avformat_open_input(&piml->formatCtx, piml->path.c_str(), NULL, &option);
+        int ret = avformat_open_input(&piml->formatCtx, piml->path.c_str(), NULL, NULL);
         if (ret) {
             // TODO Error Code
+            piml->isOpen = false;
             return ret;
         }
 
+        // piml->formatCtx->streams[0]->discard = AVDiscard::AVDISCARD_ALL;
+        // piml->formatCtx->streams[1]->discard = AVDiscard::AVDISCARD_ALL;
+
+        piml->isOpen = true;
         avformat_find_stream_info(piml->formatCtx, NULL);
         av_dump_format(piml->formatCtx, 0, piml->path.c_str(), 0);
-
         // piml->formatCtx->streams[0]->codecpar->extradata
 
+        for(int i=0;i<piml->formatCtx->nb_streams;i++){
+            // EyerLog("stream[%d] start_time: %lld\n", i, piml->formatCtx->streams[i]->start_time);
+        }
         return ret;
+    }
+
+    int EyerAVReader::OpenInput()
+    {
+        int ret = avformat_open_input(&piml->formatCtx, piml->path.c_str(), NULL, NULL);
+        if (ret) {
+            piml->isOpen = false;
+            return ret;
+        }
+        piml->isOpen = true;
+        return 0;
+    }
+
+    int EyerAVReader::FindStreamInfo()
+    {
+        avformat_find_stream_info(piml->formatCtx, NULL);
+        av_dump_format(piml->formatCtx, 0, piml->path.c_str(), 0);
+        return 0;
+    }
+
+    bool EyerAVReader::IsOpen()
+    {
+        return piml->isOpen;
     }
 
     int EyerAVReader::Close() {
         avformat_close_input(&piml->formatCtx);
+        piml->isOpen = false;
         return 0;
     }
 
@@ -97,9 +113,21 @@ namespace Eyer {
     {
         stream.piml->stream_id  = piml->formatCtx->streams[index]->index;
         stream.piml->timebase   = piml->formatCtx->streams[index]->time_base;
-        stream.piml->duration   = piml->formatCtx->streams[index]->duration * 1.0 * stream.piml->timebase.num / stream.piml->timebase.den;
 
-        EyerString name = EyerAVPixelFormat::GetByFFmpegId(piml->formatCtx->streams[index]->codecpar->format).GetName();
+        /*
+        AVDictionaryEntry * tag = nullptr;
+        tag = av_dict_get(piml->formatCtx->streams[index]->metadata, "rotate", tag, 0);
+        if (tag == nullptr) {
+            stream.piml->angle = 0;
+        } else {
+            int angle = atoi(tag->value);
+            stream.piml->angle = angle;
+        }
+         */
+
+        stream.piml->duration = piml->formatCtx->streams[index]->duration * 1.0 * stream.piml->timebase.num / stream.piml->timebase.den;
+
+        // EyerString name = EyerAVPixelFormat::GetByFFmpegId(piml->formatCtx->streams[index]->codecpar->format).GetName();
 
         return avcodec_parameters_copy(stream.piml->codecpar, piml->formatCtx->streams[index]->codecpar);
     }
@@ -140,6 +168,24 @@ namespace Eyer {
         */
         int64_t t = time * AV_TIME_BASE;
         int ret = av_seek_frame(piml->formatCtx, -1, t, AVSEEK_FLAG_BACKWARD);
+        return ret;
+    }
+
+    int EyerAVReader::SeekStream(int64_t t, int streamId)
+    {
+        int ret = av_seek_frame(piml->formatCtx, streamId, t, AVSEEK_FLAG_BACKWARD);
+        return ret;
+    }
+
+    int EyerAVReader::SeekStream(double time, int streamId)
+    {
+        EyerAVRational timebase;
+        GetTimebase(timebase, streamId);
+        int64_t tt = time * timebase.den / timebase.num;
+        int ret = av_seek_frame(piml->formatCtx, streamId, tt, AVSEEK_FLAG_BACKWARD);
+
+        // int64_t t = time * AV_TIME_BASE;
+        // int ret = av_seek_frame(piml->formatCtx, -1, t, AVSEEK_FLAG_BACKWARD);
         return ret;
     }
 

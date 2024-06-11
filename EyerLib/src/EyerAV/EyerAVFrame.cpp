@@ -9,12 +9,23 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "EyerAVFrame_CVPixelBuffer.h"
+
 namespace Eyer
 {
     EyerAVFrame::EyerAVFrame()
     {
         piml = new EyerAVFramePrivate();
         piml->frame = av_frame_alloc();
+    }
+
+    EyerAVFrame::EyerAVFrame(void * _cvPixelBuffer)
+        : EyerAVFrame()
+    {
+#ifdef EYER_PLATFORM_DARWIN
+        cvPixelBuffer = copyCVPixelBuffer(_cvPixelBuffer);
+        SetPixelFormat(Eyer::EyerAVPixelFormat::EYER_EXT_CVPIXELBUFFER);
+#endif
     }
 
     EyerAVFrame::EyerAVFrame(const EyerAVFrame & frame) : EyerAVFrame()
@@ -24,14 +35,15 @@ namespace Eyer
 
     EyerAVFrame::~EyerAVFrame()
     {
+#ifdef EYER_PLATFORM_DARWIN
+        if(cvPixelBuffer != nullptr){
+            freeCVPixelBuffer(cvPixelBuffer);
+            cvPixelBuffer = nullptr;
+        }
+#endif
+
         av_frame_unref(piml->frame);
         av_frame_free(&piml->frame);
-
-        for(int i=0;i<piml->data.size();i++){
-            free(piml->data[i]);
-            piml->data[i] = nullptr;
-        }
-        piml->data.clear();
 
         if(piml != nullptr){
             delete piml;
@@ -41,10 +53,24 @@ namespace Eyer
 
     EyerAVFrame & EyerAVFrame::operator = (const EyerAVFrame & frame)
     {
+#ifdef EYER_PLATFORM_DARWIN
+        if(cvPixelBuffer != nullptr){
+            freeCVPixelBuffer(cvPixelBuffer);
+            cvPixelBuffer = nullptr;
+        }
+        if(frame.cvPixelBuffer != nullptr){
+            cvPixelBuffer = copyCVPixelBuffer(frame.cvPixelBuffer);
+        }
+#endif
+        av_frame_unref(piml->frame);
+
         piml->secPTS = frame.piml->secPTS;
+        piml->LAST_FRAME_FLAG = frame.piml->LAST_FRAME_FLAG;
+        piml->angle = frame.piml->angle;
         av_frame_copy_props(piml->frame, frame.piml->frame);
         av_frame_copy(piml->frame, frame.piml->frame);
         av_frame_ref(piml->frame, frame.piml->frame);
+
         return *this;
     }
 
@@ -283,12 +309,12 @@ namespace Eyer
         return ret;
     }
 
-    int EyerAVFrame::Scale(EyerAVFrame & frame, const EyerAVPixelFormat format)
+    int EyerAVFrame::Scale(EyerAVFrame & frame, const EyerAVPixelFormat format) const
     {
         return Scale(frame, format, GetWidth(), GetHeight());
     }
 
-    int EyerAVFrame::Scale(EyerAVFrame & dstFrame, const int dstW, const int dstH)
+    int EyerAVFrame::Scale(EyerAVFrame & dstFrame, const int dstW, const int dstH) const
     {
         AVPixelFormat distFormat = (AVPixelFormat)piml->frame->format;
 
@@ -331,7 +357,7 @@ namespace Eyer
         return 0;
     }
 
-    int EyerAVFrame::Scale(EyerAVFrame & dstFrame, const EyerAVPixelFormat distformat, int dstW, int dstH)
+    int EyerAVFrame::Scale(EyerAVFrame & dstFrame, const EyerAVPixelFormat distformat, int dstW, int dstH) const
     {
         EyerAVPixelFormat format = distformat;
         if(distformat == EyerAVPixelFormat::EYER_KEEP_SAME){
@@ -407,7 +433,6 @@ namespace Eyer
 
     const EyerAVPixelFormat EyerAVFrame::GetPixelFormat() const
     {
-        // EyerLog("GetPixelFormat format: %d\n", piml->frame->format);
         return EyerAVPixelFormat::GetByFFmpegId(piml->frame->format);
     }
 
@@ -418,7 +443,6 @@ namespace Eyer
 
     EyerAVSampleFormat EyerAVFrame::GetSampleFormat()
     {
-        // EyerLog("GetSampleFormat format: %d\n", piml->frame->format);
         return EyerAVSampleFormat::GetByFFmpegId(piml->frame->format);
     }
 
@@ -461,5 +485,10 @@ namespace Eyer
     {
         piml->LAST_FRAME_FLAG = flag;
         return 0;
+    }
+
+    const int EyerAVFrame::GetAngle() const
+    {
+        return piml->angle;
     }
 }

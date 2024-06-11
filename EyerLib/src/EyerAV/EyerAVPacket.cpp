@@ -42,9 +42,20 @@ namespace Eyer
         return *this;
     }
 
+    int EyerAVPacket::SetPTS(int64_t pts)
+    {
+        piml->packet->pts = pts;
+        return 0;
+    }
+
     int64_t EyerAVPacket::GetPTS()
     {
         return piml->packet->pts;
+    }
+    
+    int64_t EyerAVPacket::GetDTS()
+    {
+        return piml->packet->dts;
     }
 
     int EyerAVPacket::GetStreamIndex()
@@ -98,5 +109,15 @@ namespace Eyer
     double EyerAVPacket::GetSecPTS()
     {
         return piml->secPTS;
+    }
+
+    int EyerAVPacket::SetPKGNULLFlag()
+    {
+        piml->nullFlag = true;
+        return 0;
+    }
+    bool EyerAVPacket::IsNullPKG()
+    {
+        return piml->nullFlag;
     }
 }

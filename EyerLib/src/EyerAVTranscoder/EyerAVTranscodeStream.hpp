@@ -13,8 +13,11 @@ namespace Eyer
         EyerAVDecoder * decoder = nullptr;
         EyerAVEncoder * encoder = nullptr;
         EyerAVResample * resample = nullptr;
+        int readStreamId = -1;
         int writeStreamId = -1;
         int64_t audioPts = 0;
+        int encoderVideoFrameIndex = 0;
+        int isRangeEnd = 0;
     };
 }
 

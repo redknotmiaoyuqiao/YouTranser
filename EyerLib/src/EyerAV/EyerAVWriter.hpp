@@ -11,7 +11,7 @@ namespace Eyer
 
     class EyerAVWriter {
     public:
-        EyerAVWriter(const EyerString _path);
+        EyerAVWriter(const EyerString & _path);
         ~EyerAVWriter();
 
         int Open();

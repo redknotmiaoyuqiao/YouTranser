@@ -9,6 +9,10 @@
 #include "string_ext.h"
 #include <stdarg.h>
 
+#ifdef MSVC
+#include <direct.h>
+#endif
+
 namespace Eyer {
     EyerString EyerString::Number(int8_t num)
     {
@@ -84,6 +88,18 @@ namespace Eyer {
 
         return logStr;
     }
+
+    EyerString EyerString::GetCWD()
+    {
+#ifdef MSVC
+        char baseDir[1024];
+        getcwd(baseDir, 1024);
+        return baseDir;
+#else
+        return "";
+#endif
+    }
+
 
     EyerString EyerString::FormatSec(int sec)
     {
@@ -219,7 +235,14 @@ namespace Eyer {
         return origin_str.empty();
     }
 
-
+    bool EyerString::StartWith(const EyerString & str) const
+    {
+        size_t found = origin_str.find(str.c_str());
+        if(found == 0){
+            return true;
+        }
+        return false;
+    }
 
 
 

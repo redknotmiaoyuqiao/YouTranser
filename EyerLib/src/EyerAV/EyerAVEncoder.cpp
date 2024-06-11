@@ -29,6 +29,7 @@ namespace Eyer {
     }
 
     int EyerAVEncoder::Init(const EyerAVEncoderParam &param) {
+        EyerLog("EyerAVEncoder::Init: %s, w: %d, h: %d\n", param.codecId.GetDescName().c_str(), param.width, param.height);
         AVDictionary *dict = NULL;
 
         const AVCodec *codec = nullptr;
@@ -63,6 +64,7 @@ namespace Eyer {
 
         if (param.codecId == EyerAVCodecID::CODEC_ID_H265) {
             codec = avcodec_find_encoder_by_name("libx265");
+            // codec = avcodec_find_encoder_by_name("hevc_videotoolbox");
 
             if (piml->codecContext != nullptr) {
                 if (avcodec_is_open(piml->codecContext)) {
@@ -75,6 +77,10 @@ namespace Eyer {
             }
 
             piml->codecContext = avcodec_alloc_context3(codec);
+
+            // piml->codecContext->gop_size
+            piml->codecContext->global_quality = FF_QP2LAMBDA * 75;
+            piml->codecContext->flags |= AV_CODEC_FLAG_QSCALE;
 
             piml->codecContext->codec_type = AVMEDIA_TYPE_VIDEO;
             piml->codecContext->codec_tag = MKTAG('h', 'v', 'c', '1');;
@@ -340,7 +346,52 @@ namespace Eyer {
             piml->codecContext->channels = av_get_channel_layout_nb_channels(piml->codecContext->channel_layout);
         }
 
+
+
+
+        if (param.codecId == EyerAVCodecID::CODEC_ID_PRORES) {
+            codec = avcodec_find_encoder(AV_CODEC_ID_PRORES);
+
+            if (piml->codecContext != nullptr) {
+                if (avcodec_is_open(piml->codecContext)) {
+                    avcodec_close(piml->codecContext);
+                }
+                avcodec_free_context(&piml->codecContext);
+                piml->codecContext = nullptr;
+
+                return -1;
+            }
+
+            piml->codecContext = avcodec_alloc_context3(codec);
+            piml->codecContext->codec_type = AVMEDIA_TYPE_VIDEO;
+            piml->codecContext->pix_fmt = (AVPixelFormat)param.pixelFormat.GetFFmpegId();
+            piml->codecContext->width = param.width;
+            piml->codecContext->height = param.height;
+            piml->codecContext->thread_count = param.threadnum;
+
+            piml->codecContext->time_base.den = param.timebase.den;
+            piml->codecContext->time_base.num = param.timebase.num;
+        }
+
+        if(param.codecId == EyerAVCodecID::CODEC_ID_SRT){
+            codec = avcodec_find_encoder(AV_CODEC_ID_SRT);
+            if (piml->codecContext != nullptr) {
+                if (avcodec_is_open(piml->codecContext)) {
+                    avcodec_close(piml->codecContext);
+                }
+                avcodec_free_context(&piml->codecContext);
+                piml->codecContext = nullptr;
+                return -1;
+            }
+            piml->codecContext = avcodec_alloc_context3(codec);
+            piml->codecContext->codec_type = AVMEDIA_TYPE_SUBTITLE;
+
+            piml->codecContext->time_base.den = param.timebase.den;
+            piml->codecContext->time_base.num = param.timebase.num;
+        }
+
         int ret = avcodec_open2(piml->codecContext, codec, &dict);
+        EyerLog("avcodec_open2 param.codecId: %s, w: %d, h: %d, %d\n", param.codecId.GetDescName().c_str(), param.width, param.height, ret);
 
         return ret;
     }

@@ -14,8 +14,8 @@ namespace Eyer
 {
     class EyerAVDecoderLine {
     public:
-        EyerAVDecoderLine(const EyerString & _path, double _startSeekTime);
-        EyerAVDecoderLine(const EyerString & _path, double _startSeekTime, const EyerAVDecoderLineParams & _params);
+        EyerAVDecoderLine(const EyerString & _path, double _startSeekTime, EyerAVReaderCustomIO * _customIO);
+        EyerAVDecoderLine(const EyerString & _path, double _startSeekTime, EyerAVReaderCustomIO * _customIO, const EyerAVDecoderLineParams & _params);
         ~EyerAVDecoderLine();
 
         int GetFrame(EyerAVFrame & frame, double pts);

@@ -4,6 +4,7 @@
 #include "EyerCore/EyerCore.hpp"
 #include "EyerAVPacket.hpp"
 #include "EyerAVStream.hpp"
+#include "EyerAVReaderCustomIO.hpp"
 
 namespace Eyer
 {
@@ -11,10 +12,15 @@ namespace Eyer
 
     class EyerAVReader {
     public:
-        EyerAVReader(EyerString _path);
+        EyerAVReader(EyerString _path, EyerAVReaderCustomIO * _customIO = nullptr);
         ~EyerAVReader();
 
         int Open();
+        int OpenInput();
+        int FindStreamInfo();
+
+        bool IsOpen();
+
         int Close();
 
         double GetDuration();
@@ -26,6 +32,8 @@ namespace Eyer
         int GetTimebase(EyerAVRational & timebase, int streamIndex);
 
         int Seek(double time);
+        int SeekStream(int64_t t, int streamId);
+        int SeekStream(double t, int streamId);
 
         int Read(EyerAVPacket & packet);
         int Read(EyerAVPacket * packet);
@@ -40,6 +48,7 @@ namespace Eyer
 
     public:
         EyerAVReaderPrivate * piml = nullptr;
+        EyerAVReaderCustomIO * customIO = nullptr;
     };
 }
 

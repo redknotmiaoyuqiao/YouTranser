@@ -17,7 +17,10 @@ namespace Eyer
 
         EyerAVPacket & operator = (const EyerAVPacket & packet);
 
+        int SetPTS(int64_t pts);
         int64_t GetPTS();
+
+        int64_t GetDTS();
 
         int GetStreamIndex();
         int SetStreamIndex(int streamIndex);
@@ -31,6 +34,9 @@ namespace Eyer
         uint8_t * GetSideDatePtr();
 
         double GetSecPTS();
+
+        int SetPKGNULLFlag();
+        bool IsNullPKG();
 
     public:
         EyerAVPacketPrivate * piml = nullptr;

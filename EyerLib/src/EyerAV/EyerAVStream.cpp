@@ -29,22 +29,20 @@ namespace Eyer
         *this = stream;
     }
 
-    EyerAVStream::EyerAVStream(EyerAVStream && stream)
-    {
-        piml = new EyerAVStreamPrivate();
-        piml->codecpar = stream.piml->codecpar;
-        piml->stream_id = stream.piml->stream_id;
-        piml->duration = stream.piml->duration;
-        stream.piml->codecpar = nullptr;
-    }
-
     EyerAVStream & EyerAVStream::operator = (const EyerAVStream & stream)
     {
         avcodec_parameters_copy(piml->codecpar, stream.piml->codecpar);
         piml->timebase      = stream.piml->timebase;
         piml->stream_id     = stream.piml->stream_id;
         piml->duration      = stream.piml->duration;
+        piml->angle         = stream.piml->angle;
         return *this;
+    }
+
+    EyerBuffer EyerAVStream::GetExtradata()
+    {
+        EyerBuffer extradataBuffer(piml->codecpar->extradata, piml->codecpar->extradata_size);
+        return extradataBuffer;
     }
 
     const int EyerAVStream::GetStreamId() const
@@ -127,5 +125,10 @@ namespace Eyer
     int EyerAVStream::GetSampleRate() const
     {
         return piml->codecpar->sample_rate;
+    }
+
+    const int EyerAVStream::GetAngle() const
+    {
+        return piml->angle;
     }
 }

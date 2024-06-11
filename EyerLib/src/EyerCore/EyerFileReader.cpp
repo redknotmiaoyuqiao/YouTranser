@@ -15,7 +15,7 @@ namespace Eyer
 
     EyerString EyerFileReader::ReadText()
     {
-        EyerString str = 0;
+        EyerString str = "";
 
         char buffer[1024] = {0};
 

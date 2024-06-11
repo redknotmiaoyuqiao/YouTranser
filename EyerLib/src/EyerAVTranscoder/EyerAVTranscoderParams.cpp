@@ -37,6 +37,12 @@ namespace Eyer
         decodeThreadNum = _params.decodeThreadNum;
         encodeThreadNum = _params.encodeThreadNum;
 
+        careAudio = _params.careAudio;
+        careVideo = _params.careVideo;
+
+        startTime = _params.startTime;
+        endTime = _params.endTime;
+
         return *this;
     }
 
@@ -82,9 +88,6 @@ namespace Eyer
     {
         return crf;
     }
-
-
-
 
     const EyerAVCodecID EyerAVTranscoderParams::GetAudioCodecId() const
     {
@@ -160,6 +163,50 @@ namespace Eyer
         return 0;
     }
 
+    int EyerAVTranscoderParams::SetCareVideo(bool _careVideo)
+    {
+        careVideo = _careVideo;
+        return 0;
+    }
+
+    const bool EyerAVTranscoderParams::GetCareVideo() const
+    {
+        return careVideo;
+    }
+
+    int EyerAVTranscoderParams::SetCareAudio(bool _careAudio)
+    {
+        careAudio = _careAudio;
+        return 0;
+    }
+
+    const bool EyerAVTranscoderParams::GetCareAudio() const
+    {
+        return careAudio;
+    }
+
+    int EyerAVTranscoderParams::SetStartTime(double _startTime)
+    {
+        startTime = _startTime;
+        return 0;
+    }
+
+    const double EyerAVTranscoderParams::GetStartTime() const
+    {
+        return startTime;
+    }
+
+    int EyerAVTranscoderParams::SetEndTime(double _endTime)
+    {
+        endTime = _endTime;
+        return 0;
+    }
+
+    const double EyerAVTranscoderParams::GetEndTime() const
+    {
+        return endTime;
+    }
+
     EyerString EyerAVTranscoderParams::ToString()
     {
         EyerString str = "";
@@ -176,6 +223,12 @@ namespace Eyer
         str += EyerString("sampleRate: ") + EyerString::Number(sampleRate) + "\n";
         str += EyerString("decodeThreadNum: ") + EyerString::Number(decodeThreadNum) + "\n";
         str += EyerString("encodeThreadNum: ") + EyerString::Number(encodeThreadNum) + "\n";
+
+        str += EyerString("careAudio: ") + EyerString::Number(careAudio) + "\n";
+        str += EyerString("careVideo: ") + EyerString::Number(careVideo) + "\n";
+
+        str += EyerString("startTime: ") + EyerString::Number(startTime) + "\n";
+        str += EyerString("endTime: ") + EyerString::Number(endTime) + "\n";
 
         return str;
     }

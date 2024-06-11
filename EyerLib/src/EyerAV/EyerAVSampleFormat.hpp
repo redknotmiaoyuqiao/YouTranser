@@ -33,6 +33,8 @@ namespace Eyer
 
         const EyerString GetName() const;
 
+        int GetBytesPerSample();
+
         int id = 0;
         int ffmpegId = 0;
         EyerString name = "";

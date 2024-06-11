@@ -15,9 +15,9 @@ namespace Eyer
 
     }
 
-    int EyerAVImageReader::ReadFrame(EyerAVFrame & frame, const EyerString & path)
+    int EyerAVImageReader::ReadFrame(EyerAVFrame & frame, const EyerString & path, EyerAVReaderCustomIO * _customIO)
     {
-        EyerAVReader reader(path);
+        EyerAVReader reader(path, _customIO);
         int ret = reader.Open();
         if(ret){
             return -1;

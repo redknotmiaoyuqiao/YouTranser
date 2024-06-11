@@ -29,6 +29,8 @@ namespace Eyer
         int GetFrame(EyerAVFrame & frame, int frameSize);
         int GetLastFrame(EyerAVFrame & frame, int frameSize);
 
+        int64_t GetTotleOutputSampleNB();
+
         EyerAVResamplePrivate * piml = nullptr;
     };
 }

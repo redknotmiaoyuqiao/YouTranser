@@ -2,6 +2,8 @@
 
 #include "EyerAVFFmpegHeader.hpp"
 
+#define EYER_EXT_CVPIXELBUFFER_ID (AV_PIX_FMT_NB+0001)
+
 namespace Eyer
 {
     EyerAVPixelFormat EyerAVPixelFormat::EYER_KEEP_SAME (-2, -2, "EYER_KEEP_SAME", "和原视频保持一致");
@@ -188,6 +190,12 @@ namespace Eyer
     EyerAVPixelFormat EyerAVPixelFormat::EYER_Y210LE (AV_PIX_FMT_Y210LE, AV_PIX_FMT_Y210LE, "EYER_Y210LE", "Y210LE");
     EyerAVPixelFormat EyerAVPixelFormat::EYER_X2RGB10LE (AV_PIX_FMT_X2RGB10LE, AV_PIX_FMT_X2RGB10LE, "EYER_X2RGB10LE", "X2RGB10LE");
     EyerAVPixelFormat EyerAVPixelFormat::EYER_X2RGB10BE (AV_PIX_FMT_X2RGB10BE, AV_PIX_FMT_X2RGB10BE, "EYER_X2RGB10BE", "X2RGB10BE");
+
+
+    EyerAVPixelFormat EyerAVPixelFormat::EYER_D3D11 (AV_PIX_FMT_D3D11, AV_PIX_FMT_D3D11, "D3D11", "D3D11");
+    EyerAVPixelFormat EyerAVPixelFormat::EYER_D3D11VA_VLD (AV_PIX_FMT_D3D11VA_VLD, AV_PIX_FMT_D3D11VA_VLD, "D3D11VA_VLD", "D3D11VA_VLD");
+
+    EyerAVPixelFormat EyerAVPixelFormat::EYER_EXT_CVPIXELBUFFER (EYER_EXT_CVPIXELBUFFER_ID, EYER_EXT_CVPIXELBUFFER_ID, "EYER_EXT_CVPIXELBUFFER", "EXT_CVPIXELBUFFER");
 
     EyerAVPixelFormat::EyerAVPixelFormat()
     {
@@ -413,6 +421,8 @@ namespace Eyer
             case AV_PIX_FMT_Y210LE: return EYER_Y210LE;
             case AV_PIX_FMT_X2RGB10LE: return EYER_X2RGB10LE;
             case AV_PIX_FMT_X2RGB10BE: return EYER_X2RGB10BE;
+
+            case EYER_EXT_CVPIXELBUFFER_ID: return EYER_EXT_CVPIXELBUFFER;
         }
 
         return EYER_NONE;
@@ -605,6 +615,12 @@ namespace Eyer
             case AV_PIX_FMT_Y210LE: return EYER_Y210LE;
             case AV_PIX_FMT_X2RGB10LE: return EYER_X2RGB10LE;
             case AV_PIX_FMT_X2RGB10BE: return EYER_X2RGB10BE;
+
+
+            case AV_PIX_FMT_D3D11: return EYER_D3D11;
+            case AV_PIX_FMT_D3D11VA_VLD: return EYER_D3D11VA_VLD;
+
+            case EYER_EXT_CVPIXELBUFFER_ID: return EYER_EXT_CVPIXELBUFFER;
         }
 
         return EYER_NONE;
@@ -628,5 +644,23 @@ namespace Eyer
     const EyerString EyerAVPixelFormat::GetDescName() const
     {
         return descName;
+    }
+
+    const int EyerAVPixelFormat::GetPixelBitDepth(int index) const
+    {
+        const AVPixFmtDescriptor * pixFmtDescriptor = av_pix_fmt_desc_get((AVPixelFormat)ffmpegId);
+        return pixFmtDescriptor->comp[index].depth;
+    }
+
+    const int EyerAVPixelFormat::GetPixelLog2ChromaW() const
+    {
+        const AVPixFmtDescriptor * pixFmtDescriptor = av_pix_fmt_desc_get((AVPixelFormat)ffmpegId);
+        return pixFmtDescriptor->log2_chroma_w;
+    }
+
+    const int EyerAVPixelFormat::GetPixelLog2ChromaH() const
+    {
+        const AVPixFmtDescriptor * pixFmtDescriptor = av_pix_fmt_desc_get((AVPixelFormat)ffmpegId);
+        return pixFmtDescriptor->log2_chroma_h;
     }
 }

@@ -30,10 +30,12 @@ namespace Eyer
         const AVBitStreamFilter * bsf = av_bsf_get_by_name(type.str.c_str());
         int ret = av_bsf_alloc(bsf, &piml->ctx);
 
+        /*
         if(type.id == EyerAVBitstreamFilterType::H264_METADATA.id){
             char * allcontent = (char *)"086f3693b7b34f2c965321492feee5b8+HelloWorld";
             av_opt_set(piml->ctx->priv_data, "sei_user_data", allcontent, AV_OPT_SEARCH_CHILDREN);
         }
+        */
 
         avcodec_parameters_copy(piml->ctx->par_in, avStream.piml->codecpar);
         av_bsf_init(piml->ctx);

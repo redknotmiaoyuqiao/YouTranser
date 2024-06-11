@@ -36,4 +36,25 @@ namespace Eyer
 
         free(buf);
     }
+
+    EyerString EyerAVMD5::md5String(const EyerString & str)
+    {
+        AVMD5 *context = av_md5_alloc();
+        av_md5_init(context);
+
+        av_md5_update(context, (uint8_t *)str.c_str(), strlen(str.c_str()));
+
+        uint8_t checksum[16];
+        av_md5_final(context, checksum);
+
+        av_freep(&context);
+
+        EyerString res = "";
+        for(int i=0;i<16;i++){
+            char resStr[8];
+            sprintf(resStr, "%02x", checksum[i]);
+            res = res + resStr;
+        }
+        return res;
+    }
 }

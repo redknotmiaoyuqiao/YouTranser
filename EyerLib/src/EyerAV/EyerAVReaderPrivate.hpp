@@ -10,8 +10,8 @@ namespace Eyer
     {
     public:
         EyerString path;
-
         AVFormatContext * formatCtx = nullptr;
+        bool isOpen = false;
     };
 }
 

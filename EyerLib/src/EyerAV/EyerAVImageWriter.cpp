@@ -22,7 +22,14 @@ namespace Eyer
         int height = frame.GetHeight();
 
         EyerAVEncoderParam encoderParam;
-        encoderParam.InitPNG(width, height, pixelFormat);
+        //
+        if(pixelFormat == EyerAVPixelFormat::EYER_RGBA){
+            encoderParam.InitPNG(width, height, pixelFormat);
+        }
+        else{
+            encoderParam.InitJPEG(width, height);
+        }
+
 
         EyerAVEncoder encoder;
         int ret = encoder.Init(encoderParam);

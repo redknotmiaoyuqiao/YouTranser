@@ -9,13 +9,19 @@ namespace Eyer
 {
     class EyerAVDecoderPrivate;
 
+    enum EyerAVDecoderOption
+    {
+        NONE,
+        D3D11VA
+    };
+
     class EyerAVDecoder
     {
     public:
         EyerAVDecoder();
         ~EyerAVDecoder();
 
-        int Init(const EyerAVStream & stream, int threadnum = 4);
+        int Init(const EyerAVStream & stream, int threadnum = 4, EyerAVDecoderOption option = NONE);
 
         int GetTimebase(EyerAVRational & timebase);
         int GetSampleRate();
@@ -29,6 +35,8 @@ namespace Eyer
         int SendPacketNull();
         int RecvFrame(EyerAVFrame & frame);
         EyerSmartPtr<EyerAVFrame> RecvFrame(int & ret);
+
+        const int GetAngle() const;
 
     private:
         // 禁止拷贝

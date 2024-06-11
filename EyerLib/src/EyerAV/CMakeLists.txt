@@ -2,8 +2,24 @@ INCLUDE_DIRECTORIES (../)
 INCLUDE_DIRECTORIES (./)
 INCLUDE_DIRECTORIES (../EyerAV)
 
+SET(EYERAV_SRC)
+
+IF (CMAKE_SYSTEM_NAME MATCHES "Linux")
+    MESSAGE(STATUS "current platform: Linux ")
+ELSEIF (CMAKE_SYSTEM_NAME MATCHES "Windows")
+    MESSAGE(STATUS "current platform: Windows")
+ELSEIF (CMAKE_SYSTEM_NAME MATCHES "Android")
+    MESSAGE(STATUS "current platform: Android")
+ELSEIF (CMAKE_SYSTEM_NAME MATCHES "Darwin")
+    MESSAGE(STATUS "current platform: Darwin")
+    SET(DARWIN_SRC EyerAVFrame_CVPixelBuffer.mm)
+ELSE ()
+    MESSAGE(STATUS "other platform: ${CMAKE_SYSTEM_NAME}")
+ENDIF (CMAKE_SYSTEM_NAME MATCHES "Linux")
+
 ADD_LIBRARY(
         EyerAV
+
         EyerAV.hpp
 
         EyerAVReader.hpp
@@ -122,6 +138,32 @@ ADD_LIBRARY(
 
         EyerAVMD5.hpp
         EyerAVMD5.cpp
+
+        EyerH264AVCC.hpp
+        EyerH264AVCC.cpp
+
+        EyerAVAudioBox.hpp
+        EyerAVAudioBox.cpp
+
+        EyerAVImageMeta.hpp
+        EyerAVImageMeta.cpp
+
+        EyerAVReaderCustomIO.hpp
+        EyerAVReaderCustomIO.cpp
+
+        EyerAVWASMReaderCustomIO.hpp
+        EyerAVWASMReaderCustomIO.cpp
+
+        EyerAVSnapshot.hpp
+        EyerAVSnapshot.cpp
+
+        EyerAVSnapshotLine.hpp
+        EyerAVSnapshotLine.cpp
+
+        EyerAVVideoWriter.hpp
+        EyerAVVideoWriter.cpp
+
+        ${DARWIN_SRC}
 )
 
 IF (CMAKE_SYSTEM_NAME MATCHES "Linux")
@@ -180,6 +222,12 @@ SET(HEAD_FILES
         EyerAVFileFmt.hpp
         EyerAVSampleRate.hpp
         EyerAVMD5.hpp
+        EyerH264AVCC.hpp
+        EyerAVAudioBox.hpp
+        EyerAVReaderCustomIO.hpp
+        EyerAVVideoWriter.hpp
+        EyerAVSnapshot.hpp
+        EyerAVSnapshotLine.hpp
 )
 
 INSTALL(FILES ${HEAD_FILES} DESTINATION include/EyerAV)

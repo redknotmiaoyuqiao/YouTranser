@@ -4,6 +4,9 @@
 #include <stdio.h>
 #include <chrono>
 #include <thread>
+#include <iomanip>
+#include <sstream>
+
 
 namespace Eyer
 {
@@ -12,24 +15,6 @@ namespace Eyer
         std::chrono::time_point<std::chrono::system_clock, std::chrono::milliseconds> tp = std::chrono::time_point_cast<std::chrono::milliseconds>(std::chrono::system_clock::now());
 	    auto tmp = std::chrono::duration_cast<std::chrono::milliseconds>(tp.time_since_epoch());
 	    return (long long)tmp.count();
-    }
-
-    EyerString EyerTime::TimeFormat()
-    {
-        char now[64];
-#ifdef _MSC_VER
-
-#else
-        time_t tt;
-        struct tm *ttime;
-
-        time(&tt);
-
-        ttime = localtime(&tt);
-        strftime(now,64,"%Y-%m-%d %H:%M:%S",ttime);
-#endif // _MSC_VER
-
-        return EyerString(now);
     }
 
     int EyerTime::EyerSleepMilliseconds(int time)
@@ -44,4 +29,21 @@ namespace Eyer
         auto tmp = std::chrono::duration_cast<std::chrono::nanoseconds>(tp.time_since_epoch());
         return (long long)tmp.count();
     }
+
+    EyerString EyerTime::Milliseconds_to_time(int milliseconds)
+    {
+        int hours = milliseconds / (1000 * 60 * 60);
+        int minutes = (milliseconds % (1000 * 60 * 60)) / (1000 * 60);
+        int seconds = (milliseconds % (1000 * 60)) / 1000;
+        int milliseconds_remainder = milliseconds % 1000;
+
+        std::ostringstream ss;
+        ss << std::setw(2) << std::setfill('0') << hours << ":"
+           << std::setw(2) << std::setfill('0') << minutes << ":"
+           << std::setw(2) << std::setfill('0') << seconds << ","
+           << std::setw(3) << std::setfill('0') << milliseconds_remainder;
+
+        return EyerString(ss.str());
+    }
+
 }

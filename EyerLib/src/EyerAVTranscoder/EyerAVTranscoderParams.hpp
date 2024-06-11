@@ -46,6 +46,18 @@ namespace Eyer
         int SetDecodeThreadNum(int num);
         int SetEncodeThreadNum(int num);
 
+        int SetCareVideo(bool _careVideo);
+        const bool GetCareVideo() const;
+
+        int SetCareAudio(bool _careAudio);
+        const bool GetCareAudio() const;
+
+        int SetStartTime(double _startTime);
+        const double GetStartTime() const;
+
+        int SetEndTime(double _endTime);
+        const double GetEndTime() const;
+
         EyerString ToString();
 
     private:
@@ -63,6 +75,12 @@ namespace Eyer
 
         int decodeThreadNum = 2;
         int encodeThreadNum = 2;
+
+        bool careAudio = true;
+        bool careVideo = true;
+
+        double startTime = 0.0;
+        double endTime = 0.0;
     };
 }
 

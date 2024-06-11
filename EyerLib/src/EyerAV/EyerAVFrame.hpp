@@ -14,6 +14,7 @@ namespace Eyer
     {
     public:
         EyerAVFrame();
+        EyerAVFrame(void * cvPixelBuffer);
         EyerAVFrame(const EyerAVFrame & frame);
         ~EyerAVFrame();
 
@@ -45,9 +46,9 @@ namespace Eyer
 
         int Resample(EyerAVFrame & frame, EyerAVChannelLayout channelLayout, EyerAVSampleFormat sampleFormat, int sample_rate);
 
-        int Scale(EyerAVFrame & frame, const EyerAVPixelFormat format, int dstW, int dstH);
-        int Scale(EyerAVFrame & frame, const EyerAVPixelFormat format);
-        int Scale(EyerAVFrame & frame, const int dstW, const int dstH);
+        int Scale(EyerAVFrame & frame, const EyerAVPixelFormat format, int dstW, int dstH) const;
+        int Scale(EyerAVFrame & frame, const EyerAVPixelFormat format) const;
+        int Scale(EyerAVFrame & frame, const int dstW, const int dstH) const;
 
         int Mirror(EyerAVFrame & frame, int type);
 
@@ -70,8 +71,14 @@ namespace Eyer
         bool GetLastFrameFlag();
         int SetLastFrameFlag(bool flag);
 
+        const int GetAngle() const;
+
     public:
         EyerAVFramePrivate * piml = nullptr;
+
+#ifdef EYER_PLATFORM_DARWIN
+        void * cvPixelBuffer = nullptr;
+#endif
     };
 }
 

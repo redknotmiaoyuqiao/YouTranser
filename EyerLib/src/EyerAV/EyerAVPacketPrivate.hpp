@@ -11,6 +11,7 @@ namespace Eyer
     public:
         AVPacket * packet = nullptr;
         double secPTS = 0.0;
+        bool nullFlag = false;
     };
 }
 

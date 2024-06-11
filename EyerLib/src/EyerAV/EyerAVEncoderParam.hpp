@@ -18,6 +18,8 @@ namespace Eyer
         EyerAVEncoderParam(const EyerAVEncoderParam & params);
         EyerAVEncoderParam & operator = (const EyerAVEncoderParam & params);
 
+        int InitProres(int _width, int _height, const EyerAVRational & _timebase, const EyerAVPixelFormat & _pixelFormat);
+
         int InitH264(int width, int height, int fps, const EyerAVPixelFormat & pixelFormat, int crf = 23);
         int InitH264(int width, int height, const EyerAVRational & _timebase, const EyerAVPixelFormat & pixelFormat, int crf = 23);
 
@@ -46,6 +48,8 @@ namespace Eyer
 
         int InitJPEG(int width, int height);
         int InitPNG(int width, int height, const EyerAVPixelFormat & _pixelFormat);
+
+        int InitSRT();
 
         int InitFromStream(const EyerAVStream & straem);
         int SetTimebase(const EyerAVRational & timebase);

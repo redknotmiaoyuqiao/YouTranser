@@ -9,7 +9,7 @@
 
 namespace Eyer
 {
-    EyerAVWriter::EyerAVWriter(const EyerString _path)
+    EyerAVWriter::EyerAVWriter(const EyerString & _path)
     {
         piml = new EyerAVWriterPrivate();
         piml->path = _path;
@@ -45,7 +45,6 @@ namespace Eyer
 
     int EyerAVWriter::AddStream(EyerAVEncoder & encoder)
     {
-
         AVStream * avStream = avformat_new_stream(piml->formatCtx, encoder.piml->codecContext->codec);
 
         avStream->time_base = encoder.piml->codecContext->time_base;

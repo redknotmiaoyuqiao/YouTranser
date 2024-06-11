@@ -193,6 +193,11 @@ namespace Eyer
         static EyerAVPixelFormat EYER_X2RGB10LE;
         static EyerAVPixelFormat EYER_X2RGB10BE;
 
+        static EyerAVPixelFormat EYER_D3D11;
+        static EyerAVPixelFormat EYER_D3D11VA_VLD;
+
+        static EyerAVPixelFormat EYER_EXT_CVPIXELBUFFER;
+
         EyerAVPixelFormat();
         EyerAVPixelFormat(const EyerAVPixelFormat & pixelFormat);
         EyerAVPixelFormat(int id, int ffmpegId, const EyerString & _name, const EyerString & _descName);
@@ -210,6 +215,10 @@ namespace Eyer
         const EyerString GetName() const;
         const EyerString GetDescName() const;
 
+        const int GetPixelBitDepth(int index) const;
+
+        const int GetPixelLog2ChromaW() const;
+        const int GetPixelLog2ChromaH() const;
     private:
         int id = 0;
         int ffmpegId = 0;

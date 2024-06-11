@@ -26,6 +26,8 @@ namespace Eyer {
         static EyerString Sprintf(const EyerString format, ...);
         static EyerString FormatSec(int sec);
 
+        static EyerString GetCWD();
+
         EyerString();
         EyerString(const EyerString & str);
         EyerString(const std::string & str);
@@ -49,6 +51,8 @@ namespace Eyer {
         bool IsEmpty() const;
 
         const char * c_str() const;
+
+        bool StartWith(const EyerString & str) const;
 
     private:
         std::string origin_str;

@@ -30,10 +30,29 @@ namespace Eyer
         return 0;
     }
 
-    int EyerAVTranscoder::Transcode(EyerAVTranscoderInterrupt * interrupt)
+    int EyerAVTranscoder::Transcode_(EyerAVTranscoderInterrupt * interrupt)
     {
-        status = EyerAVTranscoderStatus::ING;
         Eyer::EyerAVReader reader(inputPath);
+        int ret = reader.Open();
+        if(ret){
+            EyerLog("Open AV file fail\n");
+            status = EyerAVTranscoderStatus::FAIL;
+            errorDesc = "打开视频文件失败";
+            if(listener != nullptr) {
+                listener->OnFail(EyerAVTranscoderError::OPEN_INPUT_FAIL);
+            }
+            return -1;
+        }
+
+        return 0;
+    }
+
+    int EyerAVTranscoder::Transcode(EyerAVTranscoderInterrupt * interrupt, EyerAVReaderCustomIO * customIO)
+    {
+        long long startTime = Eyer::EyerTime::GetTimeNano();
+
+        status = EyerAVTranscoderStatus::ING;
+        Eyer::EyerAVReader reader(inputPath, customIO);
         int ret = reader.Open();
         if(ret){
             EyerLog("Open AV file fail\n");
@@ -65,9 +84,19 @@ namespace Eyer
 
         for(int i=0;i<streamCount;i++){
             EyerAVStream stream = reader.GetStream(i);
+
+            //转码视频还是音频
+            if((stream.GetType() == EyerAVMediaType::MEDIA_TYPE_AUDIO && !params.GetCareAudio()) ||
+               (stream.GetType() == EyerAVMediaType::MEDIA_TYPE_VIDEO && !params.GetCareVideo())){
+                EyerAVTranscodeStream * ts = new EyerAVTranscodeStream();
+                transcodeStream.push_back(ts);
+                continue;
+            }
+
             // Init ts
             EyerAVTranscodeStream * ts = new EyerAVTranscodeStream();
             transcodeStream.push_back(ts);
+            ts->readStreamId = stream.GetStreamId();
 
             // 初始化解码器
             EyerAVDecoder * decoder = new EyerAVDecoder();
@@ -136,10 +165,21 @@ namespace Eyer
         }
 
         // Start transcode
+        if(params.GetStartTime() != 0.0){
+            reader.Seek(params.GetStartTime());
+        }
         bool isInterrupt = false;
+        bool isRangeEnd = false;
+        double time = 0;
         while(1){
             EyerAVPacket packet;
+
+
+            long long startTime = Eyer::EyerTime::GetTimeNano();
             int ret = reader.Read(packet);
+            long long endTime = Eyer::EyerTime::GetTimeNano();
+            ioReadTime += (endTime - startTime);
+
             if(ret){
                 break;
             }
@@ -165,7 +205,43 @@ namespace Eyer
                     break;
                 }
                 //  EyerLog("Frame PTS: %f, Stream ID: %d\n", frame.GetSecPTS(), streamIndex);
+
+                //range处理
+                if((params.GetStartTime() != 0.0) && (frame.GetSecPTS() < params.GetStartTime())){
+                    continue;
+                }
+                if((params.GetEndTime() != 0.0) && (frame.GetSecPTS() > params.GetEndTime())){
+                    int packetStreamId = packet.GetStreamIndex();
+                    int usefulTsNum = 0;
+                    int rangeEndNum = 0;
+                    for(int i=0; i<transcodeStream.size(); i++){
+                        EyerAVTranscodeStream * ts = transcodeStream[i];
+                        if(ts->encoder != nullptr){
+                            usefulTsNum++;
+
+                            if(ts->isRangeEnd == 1){
+                                rangeEndNum++;
+                            }
+                            if(ts->isRangeEnd == 0 && ts->readStreamId == packetStreamId ){
+                                ts->isRangeEnd = 1;
+                                rangeEndNum++;
+                            }
+                        }
+                    }
+
+                    if(usefulTsNum == rangeEndNum){
+                        isRangeEnd = true;
+                        break;
+                    }
+                    continue;
+                }
+                time = frame.GetSecPTS();
+                // EyerLog("Frame PTS: %f, Stream ID: %d\n", frame.GetSecPTS(), streamIndex);
                 EncodeFrame(&write, ts, frame);
+            }
+
+            if(isRangeEnd){
+                break;
             }
 
             if(interrupt != nullptr){
@@ -174,6 +250,8 @@ namespace Eyer
                     break;
                 }
             }
+
+            // EyerLog("time: %f\n", time);
         }
 
         // Clear Decoder
@@ -188,7 +266,10 @@ namespace Eyer
                     if(ret){
                         break;
                     }
-                    // EyerLog("Flush Frame PTS: %f\n", frame.GetSecPTS());
+                    if((params.GetEndTime() != 0.0) && (frame.GetSecPTS() > params.GetEndTime())){
+                        break;
+                    }
+                    //  EyerLog("Flush Frame PTS: %f , Stream ID: %d\n", frame.GetSecPTS(), ts->readStreamId);
                     EncodeFrame(&write, ts, frame);
                 }
             }
@@ -230,8 +311,13 @@ namespace Eyer
         }
         transcodeStream.clear();
 
-        write.WriteTrailer();
-        write.Close();
+        {
+            long long startTime = Eyer::EyerTime::GetTimeNano();
+            write.WriteTrailer();
+            write.Close();
+            long long endTime = Eyer::EyerTime::GetTimeNano();
+            ioWriteTime += (endTime - startTime);
+        }
 
         reader.Close();
 
@@ -249,12 +335,26 @@ namespace Eyer
             }
         }
 
+        long long endTime = Eyer::EyerTime::GetTimeNano();
+
+        totleTime = endTime - startTime;
+
+        EyerLog("==================Transcoder Finish Start==================\n");
+        EyerLog("inputPath: %s\n", inputPath.c_str());
+        EyerLog("outputPath: %s\n", outputPath.c_str());
+        EyerLog("Transcode Totle time: %f s\n", totleTime * 1.0 / 1000000000);
+        EyerLog("Transcode IO Read Time: %f s\n", ioReadTime * 1.0 / 1000000000);
+        EyerLog("Transcode IO Write Time: %f s\n", ioWriteTime * 1.0 / 1000000000);
+        EyerLog("==================Transcoder Finish End==================\n");
+
         return 0;
     }
 
     int EyerAVTranscoder::InitEncoder(EyerAVEncoder * encoder, const EyerAVStream & stream)
     {
+        EyerLog("InitEncoder codecID: %s\n", params.GetVideoCodecId().GetDescName().c_str());
         if(stream.GetType() == EyerAVMediaType::MEDIA_TYPE_VIDEO) {
+            EyerLog("InitEncoder codecID: %s\n", params.GetVideoCodecId().GetDescName().c_str());
             EyerAVRational encoderTimebase;
             encoderTimebase.den = 1000;
             encoderTimebase.num = 1;
@@ -329,6 +429,41 @@ namespace Eyer
                         distPixelFormat,
                         params.GetCRF()
                 );
+                encoderParam.threadnum = params.GetEncodeThreadNum();
+                return encoder->Init(encoderParam);
+            }
+            else if(params.GetVideoCodecId() == EyerAVCodecID::CODEC_ID_PRORES){
+                
+                EyerAVRational encoderTimebase;
+                encoderTimebase.den = 1000;
+                encoderTimebase.num = 1;
+
+                int distWidth = stream.GetWidth();
+                int distHeight = stream.GetHeight();
+                if(params.GetWidth() > 0){
+                    distWidth = params.GetWidth();
+                }
+                if(params.GetHeight() > 0){
+                    distHeight = params.GetHeight();
+                }
+                EyerAVPixelFormat distPixelFormat = stream.GetPixelFormat();
+                if(params.GetVideoPixelFormat() != EyerAVPixelFormat::EYER_KEEP_SAME){
+                    distPixelFormat = params.GetVideoPixelFormat();
+                }
+
+                EyerLog("InitEncoder codecID: %s, %d, %d, %s\n", params.GetVideoCodecId().GetDescName().c_str(), distWidth, distHeight, distPixelFormat.GetDescName().c_str());
+
+                EyerAVTranscoderSupport support;
+                bool isSupport = support.IsPixelFmtSupports(params.GetVideoCodecId(), distPixelFormat);
+                if(!isSupport){
+                    errorDesc = "视频像素格式编码器不支持";
+                    return -2;
+                }
+
+                EyerLog("InitEncoder codecID: %s, %d, %d, %s\n", params.GetVideoCodecId().GetDescName().c_str(), distWidth, distHeight, distPixelFormat.GetDescName().c_str());
+
+                EyerAVEncoderParam encoderParam;
+                encoderParam.InitProres(distWidth, distHeight, encoderTimebase, distPixelFormat);
                 encoderParam.threadnum = params.GetEncodeThreadNum();
                 return encoder->Init(encoderParam);
             }
@@ -482,7 +617,7 @@ namespace Eyer
 
         double currentSecPTS = 0;
 
-        if(mediaType == EyerAVMediaType::MEDIA_TYPE_AUDIO){
+        if(mediaType == EyerAVMediaType::MEDIA_TYPE_AUDIO && params.GetCareAudio()){
             if(resample == nullptr){
                 EyerLog("Resample is null\n");
                 return -1;
@@ -514,13 +649,25 @@ namespace Eyer
                     }
                     packet.SetStreamIndex(ts->writeStreamId);
                     packet.RescaleTs(encodeTimebase, write->GetTimebase(ts->writeStreamId));
+
+                    long long startTime = Eyer::EyerTime::GetTimeNano();
                     write->WritePacket(packet);
+                    long long endTime = Eyer::EyerTime::GetTimeNano();
+                    ioWriteTime += (endTime - startTime);
                 }
             }
         }
-        else if(mediaType == EyerAVMediaType::MEDIA_TYPE_VIDEO){
+        else if(mediaType == EyerAVMediaType::MEDIA_TYPE_VIDEO && params.GetCareVideo()){
             currentSecPTS = frame.GetSecPTS();
             frame.SetPTS(frame.GetSecPTS() * 1000);
+            if(params.GetStartTime() != 0.0){
+                if(ts->encoderVideoFrameIndex == 0){
+                    frame.SetPTS(0);
+                }else{
+                    frame.SetPTS(frame.GetPTS() - (int64_t)(params.GetStartTime() * 1000));
+                }
+            }
+            ts->encoderVideoFrameIndex++;
 
             EyerAVPixelFormat distPixelformat = params.GetVideoPixelFormat();
             int distWidth = params.GetWidth();
@@ -538,21 +685,45 @@ namespace Eyer
                 if(ret){
                     break;
                 }
+                // EyerLog("PTS: %lld, DTS: %lld\n", packet.GetPTS(), packet.GetDTS());
                 packet.SetStreamIndex(ts->writeStreamId);
                 packet.RescaleTs(encodeTimebase, write->GetTimebase(ts->writeStreamId));
+
+                if(packet.GetDTS() > packet.GetPTS()){
+                    packet.SetPTS(packet.GetDTS());
+                }
+                // EyerLog("PTS: %lld, DTS: %lld\n", packet.GetPTS(), packet.GetDTS());
+
+                long long startTime = Eyer::EyerTime::GetTimeNano();
                 write->WritePacket(packet);
+                long long endTime = Eyer::EyerTime::GetTimeNano();
+                ioWriteTime += (endTime - startTime);
             }
         }
 
+        // EyerLog("p: %f\n", currentSecPTS);
+
         if(currentSecPTS - lastUpdateTime >= 0.5){
             if(listener != nullptr){
-                float progress = currentSecPTS / duration;
+                double tempCurrentSecPTS = 0;
+                tempCurrentSecPTS = currentSecPTS - params.GetStartTime();
+                if(params.GetStartTime() != 0.0 || params.GetEndTime() != 0.0){
+                    if(params.GetEndTime() != 0.0){
+                        duration = params.GetEndTime() - params.GetStartTime();
+                    } else{
+                        duration = duration - params.GetStartTime();
+                    }
+                }
+
+                float progress = tempCurrentSecPTS / duration;
                 if(progress >= 1.0){
                     progress = 1.0;
                 }
                 if(duration <= 0){
                     progress = 0;
                 }
+
+                // EyerLog("p: %f\n", progress);
                 listener->OnProgress(progress);
             }
             lastUpdateTime = currentSecPTS;
@@ -581,7 +752,11 @@ namespace Eyer
             }
             packet.SetStreamIndex(ts->writeStreamId);
             packet.RescaleTs(encodeTimebase, write->GetTimebase(ts->writeStreamId));
+
+            long long startTime = Eyer::EyerTime::GetTimeNano();
             write->WritePacket(packet);
+            long long endTime = Eyer::EyerTime::GetTimeNano();
+            ioWriteTime += (endTime - startTime);
         }
 
         return 0;

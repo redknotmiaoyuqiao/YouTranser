@@ -33,6 +33,7 @@
 #define EyerLog_9(format, ...) eyer_log_log(__FILE__, __FUNCTION__, __LINE__, 9, format, ##__VA_ARGS__)
 #define EyerLog_10(format, ...) eyer_log_log(__FILE__, __FUNCTION__, __LINE__, 10, format, ##__VA_ARGS__)
 #define EyerLog(format, ...) eyer_log_log(__FILE__, __FUNCTION__, __LINE__, 5, format, ##__VA_ARGS__)
+#define EyerLogE(format, ...) eyer_log_log_err(__FILE__, __FUNCTION__, __LINE__, 5, format, ##__VA_ARGS__)
 
 #define EyerLogLevel(level, format, ...) eyer_log_log(__FILE__, __FUNCTION__, __LINE__, level, format, ##__VA_ARGS__)
 
@@ -47,6 +48,7 @@ extern "C" {
 #endif
 
 void    eyer_log_log            (const char * file, const char * function, int line, int level, const char * format, ...);
+void    eyer_log_log_err        (const char * file, const char * function, int line, int level, const char * format, ...);
 
 #ifdef __cplusplus
 }
@@ -62,5 +64,17 @@ namespace Eyer
         static EyerString GetEyerLibVersion();
     };
 }
+
+namespace Eyer
+{
+    class EyerLogStatus
+    {
+    public:
+        static int ifPrint;
+    };
+}
+
+
+
 
 #endif

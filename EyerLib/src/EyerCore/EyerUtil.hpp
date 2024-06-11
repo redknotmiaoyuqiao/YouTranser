@@ -37,6 +37,8 @@ namespace Eyer
         static bool CheckCPU();
 
         static EyerString Md5(const EyerString & messgae);
+
+        static EyerString ReadText(const EyerString & path);
     };
 }
 

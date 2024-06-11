@@ -14,6 +14,7 @@ extern "C"{
 #include <libavutil/md5.h>
 #include <libswscale/swscale.h>
 #include <libavutil/samplefmt.h>
+#include <libavutil/version.h>
 }
 
 #endif //EYERLIB_EYERAVFFMPEGHEADER_HPP
