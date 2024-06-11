@@ -1,0 +1,88 @@
+name: MacOSBuild
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+jobs:
+  build:
+    name: Build
+    runs-on: macos-13-xlarge
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+          
+      - name: Cache 3rdpart git
+        id: cache-lib-git
+        uses: actions/cache@v3
+        env:
+          cache-name: cache-3rdpart-git
+        with:
+          path: Eyer3rdpart
+          key: eyer3rdpart-git
+          
+      - name: Cache 3rdpart
+        id: cache-lib
+        uses: actions/cache@v3
+        env:
+          cache-name: cache-3rdpart-libs
+        with:
+          path: Lib
+          key: eyer3rdpart
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v3
+        with:
+          version: '6.4.1'
+          host: 'mac'
+          dir: '${{ github.workspace }}/Qt/'
+          install-deps: 'true'
+          cache: 'true'
+          cache-key-prefix: 'install-qt-action'
+
+      - name: Qt test
+        run: |
+          cd '${{ github.workspace }}/Qt/Qt/'
+          pwd
+          ls
+          
+      - name: Build 3rdpart
+        run: |
+          uname -a
+          brew install yasm
+          brew install nasm
+          brew install automake
+          cd tools/
+          ls
+          sh make_3rdpart_unix_m1.sh a
+          
+      - name: Build EyerLib
+        run: |
+          cd tools/
+          ls
+          sh make_eyer_lib_m1.sh
+          
+      - name: Check
+        run: |
+          cd Lib
+          ls
+
+      - name: Build Qt Project
+        run: |
+          cd You_QT
+          mkdir action_build
+          cd action_build
+          cmake ../You -DCMAKE_PREFIX_PATH=${{ github.workspace }}/Qt/Qt/6.4.1/macos/
+          make
+
+      - name: package
+        run: |
+          cd You_QT/action_build/YouTranser/
+          macdeployqt YouTranser.app
+          zip -r YouTranser.zip YouTranser.app/
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: YouTranser_macos.zip
+          path: You_QT/action_build/YouTranser/YouTranser.zip
